@@ -86,6 +86,7 @@ app.get('/', asyncHandler(async (req, res) => {
 }));
 
 app.get('/uploads/*', (req, res) => {
+    if (req.path.startsWith('..')) { res.status(403).end(); return; }
     let filename = decodeURIComponent(join(join(__dirname, '../backend'), req.path));
     console.log('GET', filename);
     if (filename.endsWith('/')) { filename += 'index.html'; }
@@ -95,6 +96,7 @@ app.get('/uploads/*', (req, res) => {
 });
 
 app.get('*', (req, res) => {
+    if (req.path.startsWith('..')) { res.status(403).end(); return; }
     let filename = decodeURIComponent(join(__dirname, req.path));
     console.log('GET', filename);
     if (filename.endsWith('/')) { filename += 'index.html'; }
