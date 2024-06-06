@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <link rel="stylesheet" href="./styles/chat.css" />
+        <title>SwagChat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        <meta name="author" content="programORdie" />
+        <meta name="description" content="Chat with your friends with SwagChat!" />
+        <meta name="keywords" content="swag, chat, swagchat" />
+        <meta name="robots" content="index, follow" />
+        <link rel="shortcut icon" href="./images/faveicon.png" type="image/png" />
+        <link rel="icon" href="./images/faveicon.png" type="image/png" />
+    </head>
+
+    <body>
+        <div class="flex" style="width: 100vw; overflow: hidden;">
+            <div class="menu flex column space-between" id="menu" style="align-items: center;">
+                <div class="top">
+                    <div id="rooms"></div>
+                </div>
+
+                <div class="bottom flex column">
+                    <!-- <div class="about">
+                    <a title="Privacy policy" href="/privacy.html" target="_blank">Privacy policy</a>
+                    <br>
+                    <a title="About" href="/about.html" target="_blank">About SwagChat</a>
+                </div> -->
+                    <div class="currentUser" id="currentUser"></div>
+                </div>
+            </div>
+            <div class="flex column" style="width:100%">
+                <div class="title flex space-between">
+                    <div id="menuCollapse"></div>
+                    <p class="flex margin0">SwagChat</p>
+                    <div class="flex">
+                        <div id="changeWallpaper"></div>
+                        <span class="divider">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                        <div id="usersCollapse"></div>
+                    </div>
+                </div>
+                <div class="chat flex">
+                    <div class="flex column" style="width: 100%;">
+                        <div id="messages" class="messages"></div>
+                        <div class="messageInputContainer">
+                            <input id="messageInput" type="text" placeholder="Message ..." autocomplete="off"
+                                autofocus />
+                            <div>
+                                <button id="messageButton">Send</button>
+                            </div>
+                        </div>
+                        <p class="center-text creator">Made by <a href="https://pod.stio.studio" target="_blank"
+                                title="programORdie">programORdie</a>.</p>
+                    </div>
+
+                    <div class="usersOnlineContainer" id="usersOnlineContainer">
+                        <h2>Online:</h2>
+                        <div id="usersOnline" class="usersOnline scrollbarHidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+        
+        <script src="/scripts/messaging.js"></script>
+        <script src="/scripts/render.js"></script>
+        <script src="/scripts/upload.js"></script>
+
+        <script src="/scripts/index.js"></script>
+    </body>
+
+</html>
