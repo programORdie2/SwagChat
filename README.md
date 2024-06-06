@@ -48,7 +48,14 @@
 
 ![Product Name Screen Shot][product-screenshot]
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `programORdie2`, `SwagChat`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+SwagChat is a secure chat application designed to provide a seamless and safe communication experience for you and your friends. Whether you're discussing the latest trends or planning a group event, SwagChat ensures your conversations remain private and secure.
+
+Key Features:
+- **End-to-End Encryption:** All messages are encrypted to ensure complete privacy.
+- **Cross-Platform Support:** Available on Linux, macOS, and Windows.
+- **Customizable:** Add custom wallpapers and personalize your chat experience.
+- **Authentication:** Secure login system to protect your data.
+- **Real-time Messaging:** Instant messaging with real-time updates.
 
 
 
@@ -64,7 +71,7 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 <!-- GETTING STARTED -->
 ## Getting Started
 
-I can't run my server 24/7, so if you want to try out this cool app, you need to fork this repo and run it localy.<br />
+I can't run my server 24/7, so if you want to try out this cool app, you need to fork this repo and run it locally.<br />
 To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
