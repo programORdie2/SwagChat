@@ -10,6 +10,9 @@ function generateRandomId() {
 function create(user) {
     const id = generateRandomId();
     user._id = id;
+    if (!user.data.servers) {
+        user.data.servers = ["hello people", "global chat"];
+    }
     users.push(user);
     writeFileSync("./backend/auth/users.json", JSON.stringify(users));
 

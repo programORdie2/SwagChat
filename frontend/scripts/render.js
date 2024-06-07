@@ -7,7 +7,7 @@
 function createUser(user) {
     const username = user.username;
     const icon = user.icon;
-    const userHtml = '<div class="user"><img src="./images/icons/icon' + icon + '.png" alt="" /><span>' + username + '</span></div>';
+    const userHtml = '<div class="user"><img src="/uploads/icons/icon' + icon + '.png" alt="" /><span>' + username + '</span></div>';
     return userHtml;
 }
 
@@ -22,7 +22,7 @@ function createMessage(message) {
     const messageContent = message.message;
     const user = message.user;
     const userIcon = message.icon;
-    const messageHTML = '<div class="message flex"><img class="user" alt="" src="./images/icons/icon' + userIcon + '.png" /><div><span class="user">' + user + '</span><span class="messageContent">' + messageContent + '</span></div></div>';
+    const messageHTML = '<div class="message flex"><img class="user" alt="" src="uploads/icons/icon' + userIcon + '.png" /><div><span class="user">' + user + '</span><span class="messageContent">' + messageContent + '</span></div></div>';
     return messageHTML;
 }
 

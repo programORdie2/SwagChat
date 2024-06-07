@@ -86,7 +86,7 @@ app.get('/', asyncHandler(async (req, res) => {
 }));
 
 app.get('/uploads/*', (req, res) => {
-    if (req.path.startsWith('..')) { res.status(403).end(); return; }
+    if (req.path.indexOf('..') > -1) { res.status(403).end(); return; }
     let filename = decodeURIComponent(join(join(__dirname, '../backend'), req.path));
     console.log('GET', filename);
     if (filename.endsWith('/')) { filename += 'index.html'; }
@@ -96,7 +96,7 @@ app.get('/uploads/*', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-    if (req.path.startsWith('..')) { res.status(403).end(); return; }
+    if (req.path.indexOf('..') > -1) { res.status(403).end(); return; }
     let filename = decodeURIComponent(join(__dirname, req.path));
     console.log('GET', filename);
     if (filename.endsWith('/')) { filename += 'index.html'; }
@@ -114,22 +114,6 @@ let currentUsers = {};
 
 // ! CHANGE TO REAL DATABASE
 let rooms = {};
-
-// ! CHANGE TO REAL DATABASE
-let user_database = {
-    'programordie': {
-        rooms: ['hello people', 'global chat']
-    },
-    'hikolakita': {
-        rooms: ['hello people', 'global chat']
-    },
-    'stio': {
-        rooms: ['hello people', 'global chat']
-    },
-    'username': {
-        rooms: ['hello people', 'global chat']
-    }
-};
 
 /**
  * Adds a user to the users object and returns the user object.
@@ -218,12 +202,11 @@ wss.on('connection', function connection(ws) {
 
     const currentUser = {
         username: user.data.data.name,
-        icon: user.data.data.icon
+        icon: user.data.data.icon,
+        servers: user.data.data.servers
     };
 
     ws.on('join', ({ roomname }) => {
-        const { username } = currentUser;
-
         if (currentUsers[ws.id]) {
             const user = currentUsers[ws.id];
             wss.to(user.room).emit('userLeft', { username: user.username, icon: user.icon });
@@ -231,7 +214,7 @@ wss.on('connection', function connection(ws) {
             ws.leave(user.room);
         }
         let user = addUser(ws.id, roomname, {
-            username: username.toLocaleLowerCase(),
+            username: currentUser.username.toLocaleLowerCase(),
             icon: currentUser.icon
         });
         ws.join(user.room);
@@ -246,7 +229,7 @@ wss.on('connection', function connection(ws) {
 
         rooms[user.room].users.push(user);
         wss.to(user.room).emit('userJoined', { username: user.username, icon: user.icon });
-        ws.emit('load', { username: user.username, icon: user.icon }, user_database[user.username].rooms);
+        ws.emit('load', { username: user.username, icon: user.icon }, currentUser.servers);
         ws.emit('users', publicUsers(rooms[user.room].users));
         ws.emit('allMessages', rooms[user.room].lastMessages);
         ws.emit('bg', rooms[user.room].chatBg);
