@@ -13,6 +13,9 @@ function create(user) {
     if (!user.data.servers) {
         user.data.servers = ["hello people", "global chat"];
     }
+    if (!user.data.icon) {
+        user.data.icon = id + ".png";
+    }
     users.push(user);
     writeFileSync("./backend/auth/users.json", JSON.stringify(users));
 

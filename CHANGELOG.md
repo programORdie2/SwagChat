@@ -1,5 +1,10 @@
 # This is a list of all updates
 
+## v0.0.11
+ - Added avatar upload on signup
+ - Backend avatar upload handing (resizing and changing img format)
+ - Made the sign in/up form better (it still sucks lol)
+
 ## v0.0.10
  - Moved rooms list to main db
  - Moved icons to backend uploads, to prepare for next icon upload update

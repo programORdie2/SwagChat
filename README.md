@@ -111,11 +111,12 @@ That's it, I hope you enjoy it!
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Add basic Auth
+- [x] Add basic Auth
     - [x] Make backend only send index.html when succesfully authenciated.
     - [x] Make sure not-authenciated users can't access the WebSocket.
-    - [ ] Upload pfp on signup.
+    - [x] Upload pfp on signup.
 
+- [ ] Room backgound image resizing on upload (backend and frontend, for faster upload speed and type safety)
 - [ ] New db (remove the basic JSON files I used for testing)
 - [ ] Rooms db
 - [ ] Clean up backend?

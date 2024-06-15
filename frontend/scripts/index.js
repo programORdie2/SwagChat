@@ -28,9 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
 function main() {
     const TOKEN = document.cookie.split(";").find(row => row.startsWith("token=")).split("=")[1] || '';
 
-    // Display the current user.
-    document.getElementById('currentUser').innerHTML = createUser(thisUser);
-
     // Create a WebSocket connection.
     const socket = io({ path: '/ws', auth: { token: TOKEN } });
 

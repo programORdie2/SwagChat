@@ -1,15 +1,16 @@
 import "https://cdn.jsdelivr.net/gh/emn178/js-md5/build/md5.min.js"
 
 async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const { email, password } = getAllForms();
     const hash = md5(password);
+    const body = { email, password: hash };
+
     const response = await fetch("/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password: hash }),
+        body: JSON.stringify(body),
     });
     const data = await response.json();
     console.log(data);

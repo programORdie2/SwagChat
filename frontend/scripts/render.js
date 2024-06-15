@@ -7,7 +7,7 @@
 function createUser(user) {
     const username = user.username;
     const icon = user.icon;
-    const userHtml = '<div class="user"><img src="/uploads/icons/icon' + icon + '.png" alt="" /><span>' + username + '</span></div>';
+    const userHtml = '<div class="user"><img src="/uploads/icons/' + icon + '" alt="" /><span>' + username + '</span></div>';
     return userHtml;
 }
 
