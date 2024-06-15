@@ -1,0 +1,11 @@
+h2 {
+    margin: 0;
+}
+
+.avatarFinal {
+    width: 8em;
+    height: 8em;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0.4em;
+}

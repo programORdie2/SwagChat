@@ -1,8 +1,3 @@
-* {
-    box-sizing: border-box;
-    transition: all 0.1s ease-in-out;
-}
-
 :root {
     --bg: #34333c;
     --highligh-ops: #ffffff10;
@@ -21,27 +16,6 @@
     --blur: blur(5px);
     --shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
-
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--dark-lighted);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-track {
-    border-radius: 4px;
-    background-color: var(--darken-ops);
-}
-
-.scrollbarHidden::-webkit-scrollbar {
-    display: none;
-}
-
 
 body,
 html {

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Not Authorized</title>
+
+        <link rel="stylesheet" href="styles/basic.css">
+        <link rel="stylesheet" href="styles/avatarUpload.css">
+        <link rel="stylesheet" href="styles/signup.css">
+    </head>
+
+    <body>
+        <form>
+            <h2>Username</h2>
+            <input type="text" id="name" autocomplete="off" required placeholder="Username123">
+
+            <h2>Password</h2>
+            <input type="password" id="password" autocomplete="on" required placeholder="Password">
+
+            <h2>Email</h2>
+            <input type="email" id="email" autocomplete="on" required placeholder="Email">
+
+            <div id="avatar"><h2>Choose your avatar:</h2></div>
+
+            <input type="submit" value="Register" id="register">
+        </form>
+
+        <script>
+            function getAvatar() {
+                const avatar = document.getElementById("avatar");
+                const img = document.querySelector(".avatarFinal");
+
+                if (img) {
+                    return img.src;
+                }
+                else {
+                    return null;
+                }
+            }
+
+            function getAllForms() {
+                const name = document.getElementById("name").value;
+                const password = document.getElementById("password").value;
+                const email = document.getElementById("email").value;
+                const avatar = getAvatar();
+
+                return { name, password, email, avatar };
+            }
+
+            document.getElementById("register").addEventListener("click", () => {
+                event.preventDefault();
+
+                const formComplete = document.getElementById("name").value && document.getElementById("password").value && document.getElementById("email").value && getAvatar();
+
+                if (formComplete) {
+                    Auth.register();
+                }
+                else {
+                    console.warn("Please fill in all fields.");
+                }
+            });
+        </script>
+        <script type="module" src="scripts/auth.js"></script>
+        <script src="scripts/avatar.js"></script>
+    </body>
+
+</html>

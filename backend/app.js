@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { writeFile, existsSync } = require('fs');
+const { writeFile, existsSync, mkdirSync } = require('fs');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const { createServer } = require('node:http');
@@ -15,7 +15,7 @@ const Auth = require('./auth/index.js');
 
 // Create a new Express server
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
 __dirname = join(__dirname, '../frontend');
@@ -28,6 +28,17 @@ const wss = new Server(server, {
         origin: "*"
     }
 });
+
+function createFolder(path) {
+    if (!existsSync(path)) {
+        console.log('Creating folder:', path);
+        mkdirSync(path);
+    }
+}
+
+createFolder('./backend/uploads');
+createFolder('./backend/uploads/wallpaper');
+createFolder('./backend/uploads/icons');
 
 // API Routes
 app.post('/login', asyncHandler(async (req, res) => {

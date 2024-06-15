@@ -1,0 +1,32 @@
+:root {
+    --avatar-size: 400px;
+}
+
+.avatarUpload {
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gray;
+    position: relative;
+    overflow: hidden;
+}
+
+.avatarUpload .overlay {
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    border: 5px solid rgb(255, 255, 255);
+}
+
+.avatarUpload .avatar {
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+}

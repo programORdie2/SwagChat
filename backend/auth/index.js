@@ -5,6 +5,8 @@ const md5 = require("md5-js");
 
 const { findOne, create } = require("./userModel.js");
 
+const { handleAvatar } = require("../avatarProccessor.js");
+
 // Generate JWT
 function generateToken(id) {
     return sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
@@ -33,6 +35,9 @@ async function registerUser(email, password, data) {
     const salt = await genSalt(10);
     const hashedPassword = await hash(md5(password), salt);
 
+    const icon = data.icon;
+    delete data.icon;
+
     // create user
     const user = await create({
         data,
@@ -41,6 +46,8 @@ async function registerUser(email, password, data) {
     });
 
     if (user) {
+        handleAvatar(icon, user._id);
+
         return sendSuccess({
             data: user.data,
             token: generateToken(user._id),
@@ -68,7 +75,7 @@ async function loginUser(email, password) {
     }
 };
 
-function validateToken(token, allData=false) {
+function validateToken(token, allData = false) {
     try {
         const user = verify(token, process.env.JWT_SECRET);
         const data = findOne({ id: user.id });
@@ -80,14 +87,14 @@ function validateToken(token, allData=false) {
                 resetCookie: true,
             };
         }
-        
+
         console.log('Successfully validated token.');
 
         if (allData) {
             return sendSuccess({ data });
         }
 
-        return sendSuccess({data: data.data});
+        return sendSuccess({ data: data.data });
     } catch (error) {
         return sendError("Invalid token:", token);
     }

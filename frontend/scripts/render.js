@@ -22,7 +22,7 @@ function createMessage(message) {
     const messageContent = message.message;
     const user = message.user;
     const userIcon = message.icon;
-    const messageHTML = '<div class="message flex"><img class="user" alt="" src="uploads/icons/icon' + userIcon + '.png" /><div><span class="user">' + user + '</span><span class="messageContent">' + messageContent + '</span></div></div>';
+    const messageHTML = '<div class="message flex"><img class="user" alt="" src="/uploads/icons/icon' + userIcon + '.png" /><div><span class="user">' + user + '</span><span class="messageContent">' + messageContent + '</span></div></div>';
     return messageHTML;
 }
 

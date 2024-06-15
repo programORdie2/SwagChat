@@ -117,6 +117,7 @@ That's it, I hope you enjoy it!
     - [ ] Upload pfp on signup.
 
 - [ ] New db (remove the basic JSON files I used for testing)
+- [ ] Rooms db
 - [ ] Clean up backend?
 
 See the [open issues](https://github.com/programORdie2/SwagChat/issues) for a full list of proposed features (and known issues).

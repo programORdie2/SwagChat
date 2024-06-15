@@ -20,16 +20,14 @@ async function login() {
 }
 
 async function register() {
-    const icon = Math.round(Math.random() * 3);
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const { name, email, password, avatar } = getAllForms();
+    const body = { email, password, data: { name, email, icon: avatar } };
     const response = await fetch("/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, data: { name, email, icon } }),
+        body: JSON.stringify(body),
     });
     const data = await response.json();
     
