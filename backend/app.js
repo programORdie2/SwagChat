@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { writeFile, existsSync, mkdirSync } = require('fs');
+const { existsSync, mkdirSync } = require('fs');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const { createServer } = require('node:http');
@@ -13,6 +13,7 @@ const asyncHandler = require("express-async-handler");
 
 const Auth = require('./auth/index.js');
 const { uploadBg } = require('./imageProccessor.js');
+const { justSaveData, justLoadData } = require('./database.js');
 
 // Create a new Express server
 const app = express();
@@ -122,11 +123,16 @@ app.get('*', (req, res) => {
 // Maximum number of messages to keep in memory to prevent memory leaks
 const CACHE_MESSAGES = 20;
 
-// ! Holds the last users and messages sent to the clients
+// Doesn't need a real db, since all the users rejoin anyway when the connection is lost
 let currentUsers = {};
 
-// ! CHANGE TO REAL DATABASE
-let rooms = {};
+// Load the rooms from the database
+let rooms = justLoadData('rooms');
+
+// Save the rooms to the database every minute
+setInterval(() => {
+    justSaveData('rooms', rooms);
+}, 60000);
 
 /**
  * Adds a user to the users object and returns the user object.
@@ -246,7 +252,6 @@ wss.on('connection', function connection(ws) {
         const user = currentUsers[ws.id];
         if (!user) return;
 
-        sendInRoom('I left the chat', user);
         wss.to(user.room).emit('userLeft', { username: user.username, icon: user.icon });
         delete currentUsers[ws.id];
         rooms[user.room].users = rooms[user.room].users.filter(u => u.username !== user.username);

@@ -118,8 +118,8 @@ That's it, I hope you enjoy it!
 
 - [x] Room backgound image resizing on upload (backend and frontend, for faster upload speed and type safety)
 - [x] Room bg preview for all screens
-- [ ] New db (remove the basic JSON files I used for testing)
-- [ ] Rooms db
+- [x] Organize db script better
+- [x] Rooms db
 - [ ] Clean up backend?
 
 See the [open issues](https://github.com/programORdie2/SwagChat/issues) for a full list of proposed features (and known issues).

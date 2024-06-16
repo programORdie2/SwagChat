@@ -1,7 +1,7 @@
-const { readFileSync, writeFileSync } = require("fs");
 const { v4: uuidv4 } = require("uuid");
+const { openDatabase } = require("../database.js");
 
-const users = JSON.parse(readFileSync("./backend/auth/users.json"));
+const usersDatabase = openDatabase("users", "array");
 
 function generateRandomId() {
     return uuidv4();
@@ -16,17 +16,13 @@ function create(user) {
     if (!user.data.icon) {
         user.data.icon = id + ".png";
     }
-    users.push(user);
-    writeFileSync("./backend/auth/users.json", JSON.stringify(users));
+    usersDatabase.push(user);
 
     return user;
 }
 
 function findOne({ email, id }) {
-    if (id) return users.find((user) => user._id === id);
-    if (email) return users.find((user) => user.email === email);
-
-    return { data: "No user found" };
+    return usersDatabase.findOne({ email, id });
 }
 
 module.exports = { create, findOne };
