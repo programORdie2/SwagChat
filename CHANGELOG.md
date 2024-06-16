@@ -1,5 +1,10 @@
 # This is a list of all updates
 
+## v0.0.12
+ - Added a room database
+ - Improved database script
+ - Added bg resize and fixed bugs
+
 ## v0.0.11
  - Added avatar upload on signup
  - Backend avatar upload handing (resizing and changing img format)

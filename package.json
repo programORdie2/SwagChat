@@ -1,5 +1,9 @@
 {
   "type": "commonjs",
+  "name": "swagchat",
+  "version": "0.0.12",
+  "description": "Chat with your friends with SwagChat!",
+  "main": "./backend/app.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
