@@ -1,4 +1,6 @@
-import "https://cdn.jsdelivr.net/gh/emn178/js-md5/build/md5.min.js"
+import "https://cdn.jsdelivr.net/gh/emn178/js-md5/build/md5.min.js";
+
+const cookieExpiresAfter = 30 * 24 * 60 * 60;
 
 async function login() {
     const { email, password } = getAllForms();
@@ -17,7 +19,7 @@ async function login() {
 
     if (!data.success) return;
     
-    document.cookie = `token=${data.token}; path=/; max-age=30`;
+    document.cookie = `token=${data.token}; path=/; max-age=${cookieExpiresAfter}`;
 }
 
 async function register() {
@@ -36,7 +38,7 @@ async function register() {
 
     if (!data.success) return;
 
-    document.cookie = `token=${data.token}; path=/; max-age=30`;
+    document.cookie = `token=${data.token}; path=/; max-age=${cookieExpiresAfter}`;
 }
 
 async function validate() {

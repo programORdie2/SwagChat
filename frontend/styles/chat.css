@@ -27,7 +27,7 @@ html {
     color: var(--main-text-color);
     font-family: var(--font);
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: cover;
 }
 
 .usersOnline {

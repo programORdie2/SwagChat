@@ -116,7 +116,8 @@ That's it, I hope you enjoy it!
     - [x] Make sure not-authenciated users can't access the WebSocket.
     - [x] Upload pfp on signup.
 
-- [ ] Room backgound image resizing on upload (backend and frontend, for faster upload speed and type safety)
+- [x] Room backgound image resizing on upload (backend and frontend, for faster upload speed and type safety)
+- [ ] Room bg preview for all screens
 - [ ] New db (remove the basic JSON files I used for testing)
 - [ ] Rooms db
 - [ ] Clean up backend?

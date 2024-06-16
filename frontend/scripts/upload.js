@@ -69,9 +69,9 @@ function UploadForm(element, callback) {
       alert("File type not allowed. Allowed extensions: " + allowedExtensions.join(', '));
       return;
     }
-    const maxBgSize = 1024 * 500;
+    const maxBgSize = 1024 * 1024 * 10;
     if (file.size > maxBgSize) {
-      alert("File is too big. Max size is " + maxBgSize / 1024 + " KB.");
+      alert("File is too big. Max size is " + maxBgSize / 1024 / 1024 + " MB.");
       return;
     }
     dropbox.removeEventListener('click', openFileMenu);

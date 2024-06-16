@@ -12,6 +12,7 @@ const readline = require('node:readline');
 const asyncHandler = require("express-async-handler");
 
 const Auth = require('./auth/index.js');
+const { uploadBg } = require('./imageProccessor.js');
 
 // Create a new Express server
 const app = express();
@@ -24,9 +25,11 @@ const server = createServer(app);
 
 // Create a new WebSocket server, listening on port 5000 of localhost, and with the path '/ws'
 const wss = new Server(server, {
-    path: '/ws', cors: {
+    path: '/ws',
+    cors: {
         origin: "*"
-    }
+    },
+    maxHttpBufferSize: 1e7
 });
 
 function createFolder(path) {
@@ -118,9 +121,8 @@ app.get('*', (req, res) => {
 
 // Maximum number of messages to keep in memory to prevent memory leaks
 const CACHE_MESSAGES = 20;
-const MAX_BG_SIZE = 512 * 1024;
 
-// Holds the last users and messages sent to the clients
+// ! Holds the last users and messages sent to the clients
 let currentUsers = {};
 
 // ! CHANGE TO REAL DATABASE
@@ -155,34 +157,6 @@ function sendInRoom(message, user) {
     if (rooms[user.room].lastMessages.length > CACHE_MESSAGES) {
         rooms[user.room].lastMessages.shift();
     }
-}
-
-/**
- * Uploads a file as a background for a specified room.
- *
- * @param {Buffer} file - the file to upload as a background
- * @param {string} filetype - the type of the file
- * @param {string} room - the room for which the background is uploaded
- * @return {void} 
- */
-async function uploadBg(file, filetype, room) {
-    file = Buffer.from(file);
-    if (file.size > MAX_BG_SIZE) {
-        console.log('File is too big');
-        return;
-    }
-
-    const location = `/uploads/wallpaper/${room}${filetype}`;
-    writeFile("./backend" + location, file, (err) => {
-        if (err) {
-            console.error('Error uploading file:', err);
-            return;
-        }
-        rooms[room].chatBg = location;
-        wss.to(room).emit('bg', location);
-    });
-
-    console.log('File uploaded:', location);
 }
 
 /**
@@ -244,6 +218,7 @@ wss.on('connection', function connection(ws) {
         ws.emit('users', publicUsers(rooms[user.room].users));
         ws.emit('allMessages', rooms[user.room].lastMessages);
         ws.emit('bg', rooms[user.room].chatBg);
+
         // sendInRoom('Hi! I joined the chat', user);
 
         console.log('User joined:', user, ' in room:', user.room);
@@ -255,18 +230,23 @@ wss.on('connection', function connection(ws) {
         console.log('User sent message:', message, ' in room:', user.room);
     });
 
-    ws.on('bgUpload', ({ filetype, file }) => {
+    ws.on('bgUpload', (dataUrl) => {
+        console.log('bgUpload');
         const user = currentUsers[ws.id];
-        if (!file) return;
+        if (!dataUrl) return;
         if (!user) return;
 
-        uploadBg(file, filetype, user.room);
+        uploadBg(dataUrl, user.room, (location) => {
+            rooms[user.room].chatBg = location;
+            wss.to(user.room).emit('bg', location);
+        });
     });
 
     ws.on('disconnect', () => {
         const user = currentUsers[ws.id];
         if (!user) return;
 
+        sendInRoom('I left the chat', user);
         wss.to(user.room).emit('userLeft', { username: user.username, icon: user.icon });
         delete currentUsers[ws.id];
         rooms[user.room].users = rooms[user.room].users.filter(u => u.username !== user.username);

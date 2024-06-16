@@ -3,3 +3,4 @@
 node_modules/
 uploads/
 users.json
+package-lock.json

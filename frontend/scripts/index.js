@@ -20,11 +20,6 @@ let rooms = [];
 // Define the current room
 let roomID = 'hello people';
 
-// Makes sure the page is loaded before running the code.
-document.addEventListener('DOMContentLoaded', function () {
-    main();
-});
-
 function main() {
     const TOKEN = document.cookie.split(";").find(row => row.startsWith("token=")).split("=")[1] || '';
 
@@ -57,23 +52,35 @@ function main() {
     }
 
     function handleFile(file) {
-        if (file.size > maxBgSize) {
-            alert("File is too big. Max size is " + maxBgSize / 1024 + " KB.");
-            return;
-        }
-        console.log('totallt not uploading that file');
-        uploadFile(file);
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+
+        img.onload = () => {
+            const imgWidth = img.width;
+            const imgHeight = img.height;
+
+            const ratio = imgWidth / imgHeight;
+
+            if (imgWidth > imgHeight) {
+                canvas.width = 1024;
+                canvas.height = 1024 / ratio;
+            } else {
+                canvas.height = 1024
+                canvas.width = 1024 / ratio;
+            }
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/png');
+            uploadFile(dataUrl);
+        };
     }
 
-    function uploadFile(file) {
-        let filetype = (file.name).split('.');
-        filetype = '.' + filetype[filetype.length - 1];
-        if (!allowedExtensions.includes(filetype)) {
-            alert("File type not allowed. Allowed extensions: " + allowedExtensions.join(', '));
-            return;
-        }
-        socket_emit('bgUpload', { filetype, file });
-        console.log('Uploaded', file.name);
+    function uploadFile(dataUrl) {
+        socket_emit('bgUpload', dataUrl);
+        console.log('Uploaded bg');
     }
 
     // Send a new message
@@ -159,6 +166,22 @@ function main() {
         showRooms();
     });
 
+    // Reconnect
+    socket.io.on('reconnect', () => {
+        console.log('reconnected');
+        socket_emit("join", { roomname: roomID });
+    });
+
+    // Error
+    socket.on('error', (data) => {
+        console.error("Socket.IO error: " + data);
+    });
+
+    // Disconnect
+    socket.on('disconnect', () => {
+        console.warn('disconnected');
+    });
+
     // Makes you able to press enter to send the message or focus on the input.
     document.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
@@ -211,3 +234,8 @@ function main() {
         document.getElementById('usersCollapse').classList.toggle('collapsed');
     });
 }
+
+// Makes sure the page is loaded before running the code.
+document.addEventListener('DOMContentLoaded', function () {
+    main();
+});

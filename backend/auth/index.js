@@ -5,7 +5,7 @@ const md5 = require("md5-js");
 
 const { findOne, create } = require("./userModel.js");
 
-const { handleAvatar } = require("../avatarProccessor.js");
+const { handleAvatar } = require("../imageProccessor.js");
 
 // Generate JWT
 function generateToken(id) {
