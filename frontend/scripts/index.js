@@ -4,6 +4,8 @@ const maxSavedMessages = 100;
 // Define the maximum number of bytes of the background image.
 const maxBgSize = 500 * 1024;
 
+const BG_SIZE_PX = 1600;
+
 // Define the allowed file extensions.
 const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
 
@@ -65,11 +67,11 @@ function main() {
             const ratio = imgWidth / imgHeight;
 
             if (imgWidth > imgHeight) {
-                canvas.width = 1024;
-                canvas.height = 1024 / ratio;
+                canvas.width = BG_SIZE_PX;
+                canvas.height = BG_SIZE_PX / ratio;
             } else {
-                canvas.height = 1024
-                canvas.width = 1024 / ratio;
+                canvas.height = BG_SIZE_PX;
+                canvas.width = BG_SIZE_PX / ratio;
             }
 
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);

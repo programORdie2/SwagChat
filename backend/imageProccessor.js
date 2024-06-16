@@ -2,6 +2,8 @@ const fs = require('fs');
 const sharp = require('sharp');
 const sizeOf = require('image-size');
 
+const BG_SIZE_PX = 1600;
+
 /**
  * Handles the processing and storage of a user's avatar image.
  *
@@ -69,17 +71,17 @@ function uploadBg(dataUrl, room, callback) {
         const dimensions = sizeOf(`./backend${location_processing}`);
         console.log('Dimensions:', dimensions.width, dimensions.height);
 
-        let width = 1024;
-        let height = 1024;
+        let width = BG_SIZE_PX;
+        let height = BG_SIZE_PX;
 
         const ratio = dimensions.width / dimensions.height;
 
         if (dimensions.width > dimensions.height) {
-            width = 1024;
-            height = 1024 / ratio;
+            width = BG_SIZE_PX;
+            height = BG_SIZE_PX / ratio;
         } else {
-            width = 1024 / ratio;
-            height = 1024;
+            width = BG_SIZE_PX / ratio;
+            height = BG_SIZE_PX;
         }
 
         width = Math.round(width);

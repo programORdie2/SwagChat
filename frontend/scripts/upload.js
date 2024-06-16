@@ -15,7 +15,7 @@ function UploadForm(element, callback) {
   input.accept = accept;
   element.appendChild(input);
 
-  const extra = '<span>Upload a file</span><a title="Upload" class="uploadFile hidden">Upload</a>';
+  const extra = '<div class="flex center"><span>Upload a file</span><a title="Upload" class="uploadFile hidden">Upload</a></div>';
   dropbox.innerHTML += extra;
 
   function dragenter(e) {
@@ -69,7 +69,7 @@ function UploadForm(element, callback) {
       alert("File type not allowed. Allowed extensions: " + allowedExtensions.join(', '));
       return;
     }
-    const maxBgSize = 1024 * 1024 * 10;
+    const maxBgSize = 1024 * 1024 * 20;
     if (file.size > maxBgSize) {
       alert("File is too big. Max size is " + maxBgSize / 1024 / 1024 + " MB.");
       return;
@@ -79,7 +79,7 @@ function UploadForm(element, callback) {
     dropbox.classList.add('withFile')
     const fileImg = await fileToBase64(file);
     dropbox.querySelector('span').innerHTML = file.name;
-    dropbox.innerHTML = '<img src="' + fileImg + '" alt="' + file.name + '">' + dropbox.innerHTML;
+    dropbox.innerHTML = '<div class="preview"><div class="desktop-wrapper"><img class="desktop" src="' + fileImg + '" alt="' + file.name + '"></div><img class="mobile" src="' + fileImg + '" alt="' + file.name + '"></div>' + dropbox.innerHTML;
     dropbox.querySelector('.uploadFile').classList.remove('hidden');
     callback(file);
   }

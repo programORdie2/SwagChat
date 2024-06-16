@@ -28,6 +28,8 @@ html {
     font-family: var(--font);
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed;
+    background-position: 50% 50%;
 }
 
 .usersOnline {
@@ -85,6 +87,10 @@ html {
 .flex {
     display: flex;
     flex-direction: row;
+}
+
+.flex.center {
+    align-items: center;
 }
 
 .messages {
@@ -348,12 +354,60 @@ a:active {
     margin-right: 1em;
 }
 
-.dropbox img {
-    width: 50px;
-    max-height: 50px;
+.dropbox img.desktop {
+    width: 80px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 0.3em;
+    border: 2.5px solid black;
+    position: relative;
+}
+
+.dropbox .desktop-wrapper {
+    display: block;
+    position: relative;
     margin-right: 0.4em;
     margin-top: 0.1em;
+}
+
+.dropbox .desktop-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 8px;
+    height: 14px;
+    background-color: black;
+    transform: translate(-50%, 8px);
+}
+
+.dropbox .desktop-wrapper::before {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    width: 24px;
+    height: 3px;
+    background-color: black;
+    transform: translate(-50%, -3px);
+}
+
+.dropbox img.mobile {
+    width: 35px;
+    height: 70px;
+    object-fit: cover;
+    margin-right: 0.4em;
+    margin-top: 0.8em;
     border-radius: 0.3em;
+    border: 2.5px solid black;
+}
+
+.dropbox .preview {
+    display: flex;
+    align-items: center;
+    margin-right: 0.4em;
+    margin-top: 0.1em;
+    margin-bottom: 1.8em;
 }
 
 .dropbox.withFile {
@@ -363,6 +417,7 @@ a:active {
     backdrop-filter: none;
     cursor: default;
     width: fit-content;
+    flex-direction: column;
 }
 
 .dropbox * {

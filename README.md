@@ -117,7 +117,7 @@ That's it, I hope you enjoy it!
     - [x] Upload pfp on signup.
 
 - [x] Room backgound image resizing on upload (backend and frontend, for faster upload speed and type safety)
-- [ ] Room bg preview for all screens
+- [x] Room bg preview for all screens
 - [ ] New db (remove the basic JSON files I used for testing)
 - [ ] Rooms db
 - [ ] Clean up backend?
