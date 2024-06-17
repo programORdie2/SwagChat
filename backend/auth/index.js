@@ -7,13 +7,24 @@ const { findOne, create } = require("./userModel.js");
 
 const { handleAvatar } = require("../imageProccessor.js");
 
+let loginRateLimiterData = {};
+
 // Generate JWT
 function generateToken(id) {
     return sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
-function sendError(message) {
+function sendError(message, email = "") {
     console.error(message);
+
+    if (email !== "") {
+        if (loginRateLimiterData[email]) {
+            loginRateLimiterData[email] += 1;
+        } else {
+            loginRateLimiterData[email] = 1;
+        }
+    }
+
     return { success: false, message };
 }
 function sendSuccess(message) {
@@ -53,13 +64,19 @@ async function registerUser(email, password, data) {
             token: generateToken(user._id),
         });
     } else {
-        return sendError("Invalid user data");
+        return sendError("Invalid user data", email);
     }
 };
 
 async function loginUser(email, password) {
     if (!email || !password) {
-        return sendError("Please add all fields");
+        return sendError("Please add all fields", email);
+    }
+
+    if (loginRateLimiterData[email]) {
+        if (loginRateLimiterData[email] >= 5) {
+            return sendError("Too many login attempts", email);
+        }
     }
 
     // Check for user email
@@ -71,7 +88,7 @@ async function loginUser(email, password) {
             token: generateToken(user._id),
         });
     } else {
-        return sendError("Invalid credentials");
+        return sendError("Invalid credentials", email);
     }
 };
 
@@ -96,8 +113,12 @@ function validateToken(token, allData = false) {
 
         return sendSuccess({ data: data.data });
     } catch (error) {
-        return sendError("Invalid token:", token);
+        return sendError("Invalid token:" + token);
     }
 };
+
+setInterval(() => {
+    loginRateLimiterData = {};
+}, 5*60*1000);
 
 module.exports = { loginUser, registerUser, validateToken };

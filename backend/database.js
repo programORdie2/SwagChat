@@ -82,7 +82,8 @@ function _database(databaseName, type = 'array') {
         get,
         set,
         push,
-        findOne
+        findOne,
+        save: _save,
     };
 }
 

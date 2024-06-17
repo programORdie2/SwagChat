@@ -25,4 +25,8 @@ function findOne({ email, id }) {
     return usersDatabase.findOne({ email, id });
 }
 
-module.exports = { create, findOne };
+function FINAL_SAVE() {
+    usersDatabase.save();
+}
+
+module.exports = { create, findOne, FINAL_SAVE };

@@ -14,11 +14,28 @@ const asyncHandler = require("express-async-handler");
 const Auth = require('./auth/index.js');
 const { uploadBg } = require('./imageProccessor.js');
 const { justSaveData, justLoadData } = require('./database.js');
+const { FINAL_SAVE } = require("./auth/userModel.js");
 
 // Create a new Express server
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
+
+app.use((req, res, next) => {
+    const time = new Date();
+    const message = `[${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}] [${req.method}] - ${req.path}`;
+    console.log(message);
+    next();
+});
+
+// custom error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+});
+
+// Disable the X-Powered-By header
+app.disable('x-powered-by')
 
 __dirname = join(__dirname, '../frontend');
 
@@ -56,7 +73,6 @@ app.post('/login', asyncHandler(async (req, res) => {
 }));
 
 app.post('/register', asyncHandler(async (req, res) => {
-    console.log('POST /register');
     const { email, password, data } = req.body;
     const user = await Auth.registerUser(email, password, data);
     if (user.success) {
@@ -66,7 +82,6 @@ app.post('/register', asyncHandler(async (req, res) => {
 }));
 
 app.post('/validate', asyncHandler(async (req, res) => {
-    console.log('POST /validate');
     const { token } = req.body;
     const user = Auth.validateToken(token);
     if (!user.success) {
@@ -77,8 +92,6 @@ app.post('/validate', asyncHandler(async (req, res) => {
 
 // Client Routes
 app.get('/', asyncHandler(async (req, res) => {
-    console.log('GET /');
-
     const { token } = req.cookies;
 
     if (!token) {
@@ -103,7 +116,6 @@ app.get('/', asyncHandler(async (req, res) => {
 app.get('/uploads/*', (req, res) => {
     if (req.path.indexOf('..') > -1) { res.status(403).end(); return; }
     let filename = decodeURIComponent(join(join(__dirname, '../backend'), req.path));
-    console.log('GET', filename);
     if (filename.endsWith('/')) { filename += 'index.html'; }
     const fileExists = existsSync(filename);
     if (!fileExists) { console.warn('File not found:', filename); res.status(404).end(); return; }
@@ -113,7 +125,6 @@ app.get('/uploads/*', (req, res) => {
 app.get('*', (req, res) => {
     if (req.path.indexOf('..') > -1) { res.status(403).end(); return; }
     let filename = decodeURIComponent(join(__dirname, req.path));
-    console.log('GET', filename);
     if (filename.endsWith('/')) { filename += 'index.html'; }
     const fileExists = existsSync(filename);
     if (!fileExists) { console.warn('File not found:', filename); res.status(404).end(); return; }
@@ -181,7 +192,7 @@ wss.on('connection', function connection(ws) {
     console.log('connected from:', ws.handshake.address);
 
     const TOKEN = ws.handshake.auth.token || ws.handshake.query.token || '';
-    const user = Auth.validateToken(TOKEN, allData=true);
+    const user = Auth.validateToken(TOKEN, allData = true);
 
     if (!user || !user.success) {
         console.log('Invalid token:', TOKEN);
@@ -277,3 +288,24 @@ server.listen(PORT, () => {
         };
     });
 });
+
+process.stdin.resume();
+
+let saved = false;
+async function exitHandler() {
+    if (saved) return;
+    saved = true;
+    console.log('Closing server...');
+    console.log('Saving user data...');
+    FINAL_SAVE();
+    console.log('Saving rooms...');
+    justSaveData('rooms', rooms);
+    console.log('Bye bye!');
+    wss.close();
+    server.close();
+    process.exit();
+}
+
+process.on('SIGINT', exitHandler);
+process.on('SIGTERM', exitHandler);
+process.on('uncaughtException', exitHandler);
