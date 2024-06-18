@@ -3,6 +3,7 @@ require("dotenv").config();
 const { existsSync, mkdirSync } = require('fs');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
@@ -20,6 +21,7 @@ const { FINAL_SAVE } = require("./auth/userModel.js");
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
+app.use(compression());
 
 app.use((req, res, next) => {
     const time = new Date();

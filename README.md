@@ -120,7 +120,7 @@ That's it, I hope you enjoy it!
 - [x] Room bg preview for all screens
 - [x] Organize db script better
 - [x] Rooms db
-- [ ] Same name login rate limiting
+- [x] Same name login rate limiting
 - [ ] Email verification
 - [ ] Clean up backend?
 
