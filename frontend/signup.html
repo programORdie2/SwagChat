@@ -17,6 +17,10 @@
             <h1>Register</h1>
 
             <form>
+                <div id="error" class="hidden">
+                    <span>This email is already registered!</span>
+                </div>
+
                 <h2 id="emailError">Email</h2>
                 <input type="email" id="email" autocomplete="on" required placeholder="Email">
                 <span id="emailError2"></span>
@@ -110,7 +114,7 @@
 
             function verifyValues() {
                 const { name, password, email, avatar } = getAllForms();
-                if (name.trim() && password.trim() && email.trim() && avatar.trim()) {
+                if (name && password && email && avatar) {
                     if (checkEmail(email) && checkPassword(password) && checkUsername(name)) {
                         return true;
                     }
@@ -150,13 +154,11 @@
             function handleRegisterClick(event) {
                 event.preventDefault();
 
+                if (document.getElementById("register").disabled) return;
+
                 if (verifyValues()) {
-                    document.getElementById("register").removeEventListener("click", handleRegisterClick);
-                    document.getElementById("register").addEventListener("click", (e) => {
-                        e.preventDefault();
-                    });
-                    document.getElementById("register").value = "";
-                    document.getElementById("loading").classList.remove("hidden");
+                    document.getElementById("register").value = "Registering...";
+                    document.getElementById("register").disabled = true;
                     Auth.register();
                 }
                 else {

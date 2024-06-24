@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Lost in Conversation</title>
+    <link rel="stylesheet" href="/styles/404.css">
+    <link rel="icon" href="/images/faveicon.png" type="image/png">
+</head>
+<body>
+    <div class="container">
+        <h1>Oops! Looks like we got lost in the conversation.</h1>
+        <p>We can't seem to find the page you're looking for. It's probably off having a chat of its own somewhere. Let's get you back on track!</p>
+        <div class="map">
+            <div class="landmark" id="valley">Valley of Lost Chats</div>
+            <div class="landmark" id="mountain">Mountain of Miscommunication</div>
+            <div class="landmark" id="sea">Sea of Typing Indicators</div>
+            <div class="character">
+                <img src="/images/magnifying-glass.png" alt="Searching Character">
+            </div>
+        </div>
+        <div class="buttons">
+            <button onclick="window.location.href='/'" class="home-button">Return Home</button>
+        </div>
+    </div>
+    <div id="easter-egg" class="hidden">Did you know? The first emoticon was used in 1982!</div>
+    <script>
+        document.querySelector(".character").addEventListener("click", () => {
+            document.getElementById("easter-egg").classList.remove("hidden");
+        });
+    </script>
+</body>
+</html>

@@ -57,9 +57,10 @@ function _database(databaseName, type = 'array') {
      * @param {string} options.email - The email of the user to find.
      * @return {Object|null} The user object if found, or an object with a "data" property set to "No user found" if not found.
      */
-    function findOne({ email, id }) {
+    function findOne({ email, name, id }) {
         if (id) return data.find((user) => user._id === id);
         if (email) return data.find((user) => user.email === email);
+        if (name) return data.find((user) => user.data.name === name);
 
         return { data: "No user found" };
     }

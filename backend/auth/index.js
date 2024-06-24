@@ -44,7 +44,7 @@ async function registerUser(email, password, data) {
         return sendError("Invalid password");
     }
 
-    if (!validateUsername(data.username)) {
+    if (!validateUsername(data.name)) {
         return sendError("Invalid username");
     }
 
@@ -52,6 +52,11 @@ async function registerUser(email, password, data) {
     const userExists = await findOne({ email });
     if (userExists) {
         return sendError("User already exists");
+    }
+
+    const userNameExists = await findOne({ name: data.name });
+    if (userNameExists) {
+        return sendError("Username already exists");
     }
 
     // create hash password

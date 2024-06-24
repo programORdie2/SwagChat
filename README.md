@@ -121,8 +121,15 @@ That's it, I hope you enjoy it!
 - [x] Organize db script better
 - [x] Rooms db
 - [x] Same name login rate limiting
+- [x] Reqister/login error showing in frontend
+- [x] Sanitize user input
+- [x] Add 404 page
+- [x] Prevent email "+" hack
+- [ ] Add logout button in frontend
+- [ ] Login with both username and email
 - [ ] Email verification
-- [ ] Clean up backend?
+- [ ] Room creation and invation
+- [ ] Rooms browser
 
 See the [open issues](https://github.com/programORdie2/SwagChat/issues) for a full list of proposed features (and known issues).
 

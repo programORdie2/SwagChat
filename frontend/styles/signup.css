@@ -183,3 +183,25 @@ span.error {
         transform: rotate(360deg);
     }
 }
+
+input[type="submit"]:disabled {
+    background-color: var(--signup-disabled);
+    cursor: not-allowed;
+}
+
+#error {
+    min-height: 40px;
+    width: 100%;
+    background-color: rgba(255, 0, 0, 0.148);
+    color: white;
+    font-size: 0.9em;
+    text-align: left;
+    padding: 0.7em;
+    border-radius: 0.5em;
+    margin-top: 0.5em;
+    border: 2px solid rgba(188, 3, 61, 0.699);
+}
+
+#error.hidden {
+    display: none;
+}

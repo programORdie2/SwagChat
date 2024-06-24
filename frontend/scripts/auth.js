@@ -1,4 +1,5 @@
 import "https://cdn.jsdelivr.net/gh/emn178/js-md5/build/md5.min.js";
+import { showHTTPError } from "./signinupError.js";
 
 const cookieExpiresAfter = 30 * 24 * 60 * 60;
 
@@ -17,9 +18,21 @@ async function login() {
     const data = await response.json();
     console.log(data);
 
-    if (!data.success) return;
+    if (!data.success) {
+        showHTTPError(data);
+        return;
+    }
     
     document.cookie = `token=${data.token}; path=/; max-age=${cookieExpiresAfter}`;
+
+    if (window.parent !== window) {
+        window.parent.location.reload();
+    }
+    
+    if (window.location.pathname === "/") {
+        window.location.reload();
+    }
+    window.location = "/";
 }
 
 async function register() {
@@ -32,13 +45,26 @@ async function register() {
         },
         body: JSON.stringify(body),
     });
+
     const data = await response.json();
     
     console.log(data);
 
-    if (!data.success) return;
+    if (!data.success) {
+        showHTTPError(data);
+        return;
+    }
 
     document.cookie = `token=${data.token}; path=/; max-age=${cookieExpiresAfter}`;
+
+    if (window.parent !== window) {
+        window.parent.location.reload();
+    }
+
+    if (window.location.pathname === "/") {
+        window.location.reload();
+    }
+    window.location = "/";
 }
 
 async function validate() {

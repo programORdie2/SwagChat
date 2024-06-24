@@ -1,0 +1,121 @@
+@import url('./vars.css');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--main-text-color);
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    max-width: 600px;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+.map {
+    position: relative;
+    width: 80%;
+    height: 400px;
+    margin: 20px auto;
+    background: url('/images/map.png') no-repeat center center;
+    background-size: cover;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.landmark {
+    position: absolute;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: var(--bg);
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s;
+}
+
+#valley {
+    top: 50%;
+    left: 10%;
+}
+
+#mountain {
+    top: 20%;
+    right: 20%;
+}
+
+#sea {
+    bottom: 10%;
+    left: 50%;
+}
+
+.character {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    z-index: 1;
+}
+
+.character img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    z-index: 1;
+    position: relative;
+}
+
+.buttons {
+    margin: 20px 0;
+}
+
+.home-button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    color: #fff;
+    background-color: var(--signup-main);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.home-button:hover {
+    background-color: var(--signup-darken);
+    transform: scale(1.05);
+}
+
+.hidden {
+    display: none;
+}
+
+#easter-egg {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ad9d0d;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+}
+
+#valley:hover, #mountain:hover, #sea:hover {
+    transform: scale(1.1);
+}

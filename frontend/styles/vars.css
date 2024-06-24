@@ -12,11 +12,13 @@
     --user-icon-size: 38px;
     --small-dark-text-color: #d7d7d7;
     --small-dark-text-color-ops: #d7d7d760;
-    --message-button-color: #1c8aff;
+    --message-button-color: #8a2be2;
     --darken-ops: #30303067;
     --blur: blur(5px);
     --shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
     --signup-main: #8a2be2;
     --signup-darken: #8127d4;
+    --signup-very-darken: #6e1ab0;
+    --signup-disabled: #666666;
 }

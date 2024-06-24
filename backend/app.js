@@ -120,7 +120,7 @@ app.get('/uploads/*', (req, res) => {
     let filename = decodeURIComponent(join(join(__dirname, '../backend'), req.path));
     if (filename.endsWith('/')) { filename += 'index.html'; }
     const fileExists = existsSync(filename);
-    if (!fileExists) { console.warn('File not found:', filename); res.status(404).end(); return; }
+    if (!fileExists) { console.warn('File not found:', filename); res.status(404).sendFile(join(__dirname, '/404.html')); return; }
     res.sendFile(filename);
 });
 
@@ -129,7 +129,7 @@ app.get('*', (req, res) => {
     let filename = decodeURIComponent(join(__dirname, req.path));
     if (filename.endsWith('/')) { filename += 'index.html'; }
     const fileExists = existsSync(filename);
-    if (!fileExists) { console.warn('File not found:', filename); res.status(404).end(); return; }
+    if (!fileExists) { console.warn('File not found:', filename); res.status(404).sendFile(join(__dirname, '/404.html')); return; }
     res.sendFile(filename);
 });
 
@@ -146,6 +146,23 @@ let rooms = justLoadData('rooms');
 setInterval(() => {
     justSaveData('rooms', rooms);
 }, 60000);
+
+function sanitize(message) {
+    const entityMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+        '/': '&#x2F;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+      };
+
+    return String(message).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+    });
+}
 
 /**
  * Adds a user to the users object and returns the user object.
@@ -244,6 +261,7 @@ wss.on('connection', function connection(ws) {
     });
 
     ws.on('send', ({ message }) => {
+        message = sanitize(message);
         const user = currentUsers[ws.id];
         sendInRoom(message, user);
         console.log('User sent message:', message, ' in room:', user.room);

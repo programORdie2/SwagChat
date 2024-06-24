@@ -522,13 +522,13 @@ a:active {
 }
 
 ._popup>div .uploadFile {
-    background-color: #0000c0;
-    border: 2.4px solid #00117f;
+    background-color: var(--signup-main);
+    border: 2.4px solid var(--signup-very-darken);
     margin-left: 0.4em;
 }
 
 ._popup>div .uploadFile:hover {
-    background-color: #0000a0;
+    background-color: var(--signup-darken);
     cursor: pointer;
 }
 

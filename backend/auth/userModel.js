@@ -21,8 +21,8 @@ function create(user) {
     return user;
 }
 
-function findOne({ email, id }) {
-    return usersDatabase.findOne({ email, id });
+function findOne({ email, name, id }) {
+    return usersDatabase.findOne({ email, name, id });
 }
 
 function FINAL_SAVE() {
