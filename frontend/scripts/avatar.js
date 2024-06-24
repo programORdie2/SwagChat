@@ -1,4 +1,4 @@
-const avaterSize = 400;
+const avaterSize = 200;
 
 function createResizeForm(imgUrl) {
     const outer = document.getElementById('avatar');
@@ -58,6 +58,14 @@ function createAvatarUploadForm() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'image/*';
+    
+    const label = document.createElement('label');
+    label.textContent = 'Upload avatar';
+    label.addEventListener('click', () => {
+        fileInput.click();
+    });
+    label.className = 'file-label';
+    outer.appendChild(label);
     outer.appendChild(fileInput);
     
     fileInput.addEventListener('change', (e) => {
@@ -75,6 +83,7 @@ function createAvatarUploadForm() {
             
             const button = document.createElement('button');
             button.textContent = 'Upload avatar';
+            button.className = 'finalUpload';
             outer.appendChild(button);
 
             button.addEventListener('click', () => {

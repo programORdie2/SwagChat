@@ -1,22 +1,3 @@
-:root {
-    --bg: #34333c;
-    --highligh-ops: #ffffff10;
-    --highligh-ops-small: #45454544;
-    --main-text-color: #f5f5f5;
-    --text-color-ops: #d7d7d780;
-    --font: 'Nunito', sans-serif;
-    --user-border-radius: 0.2em;
-    --dark-lighted: #2d2d2d;
-    --extra-dark-lighted: #212121;
-    --user-icon-size: 38px;
-    --small-dark-text-color: #d7d7d7;
-    --small-dark-text-color-ops: #d7d7d760;
-    --message-button-color: #1c8aff;
-    --darken-ops: #30303067;
-    --blur: blur(5px);
-    --shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-}
-
 body,
 html {
     color-scheme: dark;

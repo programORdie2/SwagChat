@@ -13,34 +13,129 @@
     </head>
 
     <body>
-        <h1>Register</h1>
+        <section>
+            <h1>Register</h1>
 
-        <form>
-            <h2>Username</h2>
-            <input type="text" id="name" autocomplete="off" required placeholder="Username123">
+            <form>
+                <h2 id="emailError">Email</h2>
+                <input type="email" id="email" autocomplete="on" required placeholder="Email">
+                <span id="emailError2"></span>
 
-            <h2>Password</h2>
-            <input type="password" id="password" autocomplete="on" required placeholder="Password">
+                <h2 id="nameError">Username</h2>
+                <input type="text" id="name" autocomplete="off" required placeholder="Username123">
+                <span id="nameError2"></span>
 
-            <h2>Email</h2>
-            <input type="email" id="email" autocomplete="on" required placeholder="Email">
+                <h2 id="passwordError">Password</h2>
+                <div class="passwordContainer">
+                    <input type="password" id="password" autocomplete="on" required placeholder="Password">
+                    <button type="button" title="Show/Hide Password" onclick="togglePassword()">
+                        <svg class="show" style="display: block;" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="15" height="15">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                        </svg>
 
-            <div id="avatar"><h2>Choose your avatar:</h2></div>
+                        <svg class="hide" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="15" height="15">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <span id="passwordError2"></span>
 
-            <input type="submit" value="Register" id="register">
-        </form>
+                <div id="avatar">
+                    <h2 id="avatarError">Choose your avatar:</h2>
+                </div>
 
+                <div class="registerContainer">
+                    <input type="submit" value="Register" id="register">
+                    <span id="loading" class="hidden"></span>
+                </div>
+            </form>
+
+            <div class="loginSwitch">
+                <p>Already have an account?</p>
+                <a href="signin.html">Login</a>
+            </div>
+        </section>
+
+        <script src="scripts/typeValidation.js"></script>
         <script>
+            function showError(elementName, message) {
+                const element = document.getElementById(elementName);
+                element.classList.add("error");
+
+                const elementError = document.getElementById(elementName + "Error2");
+
+                if (elementError) {
+                    elementError.textContent = message;
+                    elementError.classList.add("error");
+                }
+            }
+
+            function clearErrors() {
+                const elements = Array.from(document.getElementsByClassName("error"));
+                elements.forEach((element) => {
+                    element.classList.remove("error");
+                    if (element.id.endsWith("Error2")) {
+                        element.textContent = "";
+                    }
+                });
+            }
+
+            document.querySelector("form").addEventListener("keyup", (event) => {
+                clearErrors();
+                setTimeout(() => {
+                    checkErrors();
+                }, 0);
+            });
+
+            function checkErrors() {
+                const { name, password, email, avatar } = getAllForms();
+
+                if (!checkUsername(name) && name) {
+                    showError("name", "Username should be 3-20 characters long and only contain letters and numbers");
+                }
+
+                if (!checkPassword(password) && password) {
+                    showError("password", "Password should be 8-20 characters long and contain at least 1 number");
+                }
+
+                if (!checkEmail(email) && email) {
+                    showError("email", "Please enter a valid email");
+                }
+            }
+
+            function verifyValues() {
+                const { name, password, email, avatar } = getAllForms();
+                if (name.trim() && password.trim() && email.trim() && avatar.trim()) {
+                    if (checkEmail(email) && checkPassword(password) && checkUsername(name)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function togglePassword() {
+                const password = document.getElementById("password");
+                if (password.type === "password") {
+                    password.type = "text";
+                    document.querySelector(".show").style.display = "none";
+                    document.querySelector(".hide").style.display = "block";
+                } else {
+                    password.type = "password";
+                    document.querySelector(".show").style.display = "block";
+                    document.querySelector(".hide").style.display = "none";
+                }
+            }
+
             function getAvatar() {
-                const avatar = document.getElementById("avatar");
                 const img = document.querySelector(".avatarFinal");
 
-                if (img) {
-                    return img.src;
-                }
-                else {
-                    return null;
-                }
+                if (img) return img.src;
+                return null;
             }
 
             function getAllForms() {
@@ -52,18 +147,53 @@
                 return { name, password, email, avatar };
             }
 
-            document.getElementById("register").addEventListener("click", () => {
+            function handleRegisterClick(event) {
                 event.preventDefault();
 
-                const formComplete = document.getElementById("name").value && document.getElementById("password").value && document.getElementById("email").value && getAvatar();
-
-                if (formComplete) {
+                if (verifyValues()) {
+                    document.getElementById("register").removeEventListener("click", handleRegisterClick);
+                    document.getElementById("register").addEventListener("click", (e) => {
+                        e.preventDefault();
+                    });
+                    document.getElementById("register").value = "";
+                    document.getElementById("loading").classList.remove("hidden");
                     Auth.register();
                 }
                 else {
-                    console.warn("Please fill in all fields.");
+                    showFieldsNotComplete();
                 }
-            });
+            }
+
+            document.getElementById("register").addEventListener("click", handleRegisterClick);
+
+            function showFieldsNotComplete() {
+                const { name, password, email, avatar } = getAllForms();
+
+                if (!name) {
+                    document.getElementById("nameError").classList.add("error");
+                }
+
+                if (!password) {
+                    document.getElementById("passwordError").classList.add("error");
+                }
+
+                if (!email) {
+                    document.getElementById("emailError").classList.add("error");
+                }
+
+                if (!avatar) {
+                    document.getElementById("avatarError").classList.add("error");
+                }
+
+                setTimeout(() => {
+                    document.getElementById("nameError").classList.remove("error");
+                    document.getElementById("passwordError").classList.remove("error");
+                    document.getElementById("emailError").classList.remove("error");
+                    if (document.getElementById("avatarError")) {
+                        document.getElementById("avatarError").classList.remove("error");
+                    }
+                }, 2000);
+            }
         </script>
         <script type="module" src="scripts/auth.js"></script>
         <script src="scripts/avatar.js"></script>

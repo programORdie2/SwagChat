@@ -6,35 +6,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Not Authorized</title>
+        <link rel="icon" href="./images/faveicon.png" type="image/png">
 
         <link rel="stylesheet" href="styles/basic.css">
         <link rel="stylesheet" href="styles/notAuthorized.css">
     </head>
 
     <body>
-        <div class="choose">
-            <button>Register</button>
-            <button class="selected">Login</button>
-        </div>
-
         <div>
-            <iframe class="register" src="./signup.html" frameborder="0" style="width: 100vw; height: 100vh;"></iframe>
-            <iframe class="selected login" src="./signin.html" frameborder="0" style="width: 100vw; height: 100vh;"></iframe>
+            <iframe class="register selected" src="./signup.html" frameborder="0"></iframe>
+            <iframe class="login" src="./signin.html" frameborder="0"></iframe>
         </div>
-
-        <script>
-            document.querySelectorAll(".choose button").forEach(button => {
-                button.addEventListener("click", () => {
-                    document.querySelector(".choose .selected").classList.remove("selected");
-                    button.classList.add("selected");
-
-                    document.querySelector("iframe.selected").classList.remove("selected");
-                    document.querySelector("iframe." + button.textContent.toLowerCase()).classList.add("selected");
-                });
-            });
-
-            document.querySelector(".choose button").click();
-        </script>
     </body>
 
 </html>

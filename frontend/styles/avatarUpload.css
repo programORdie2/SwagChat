@@ -1,21 +1,23 @@
 :root {
-    --avatar-size: 400px;
+    --avatar-size: 200px;
 }
 
 .avatarUpload {
-    width: 400px;
-    height: 400px;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: gray;
+    background-color: var(--bg);
     position: relative;
     overflow: hidden;
+    border-radius: 5px;
+    border: 2px dashed var(--text-color-ops);
 }
 
 .avatarUpload .overlay {
-    width: 400px;
-    height: 400px;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -26,7 +28,83 @@
 }
 
 .avatarUpload .avatar {
-    width: 400px;
-    height: 400px;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
     object-fit: cover;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-label,
+.finalUpload {
+    cursor: pointer;
+    padding: 0.5em;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    background-color: var(--highligh-ops);
+    margin-top: 1em;
+    display: block;
+    width: fit-content;
+    margin-left: 1em;
+    border: none;
+    outline: none;
+    color: var(--text-color);
+}
+
+.file-label:hover,
+.finalUpload:hover {
+    background-color: var(--highlight-ops-big);
+}
+
+.finalUpload {
+    display: initial;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 1px;
+    cursor: grab;
+
+    &::-webkit-slider-thumb {
+        box-shadow: none;
+        border: 0px solid #ffffff;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        height: 24px;
+        width: 12px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 1);
+        -webkit-appearance: none;
+        margin-top: 0px;
+    }
+
+    &::-moz-range-thumb {
+        box-shadow: none;
+        border: 0px solid #ffffff;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        height: 24px;
+        width: 12px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 1);
+        appearance: none;
+        -webkit-appearance: none;
+        margin-top: 0px;
+    }
+
+    &:active::-webkit-slider-thumb {
+        background: rgba(255, 255, 255, 1);
+        cursor: grabbing;
+    }
+
+    &:active::-moz-range-thumb {
+        background: rgba(255, 255, 255, 1);
+        cursor: grabbing;
+    }
+
+    &:active {
+        cursor: grabbing !important;
+    }
 }

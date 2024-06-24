@@ -12,38 +12,62 @@
     </head>
 
     <body>
-        <h1>Login</h1>
+        <section>
+            <h1>Register</h1>
 
-        <form>
-            <h2>Password</h2>
-            <input type="password" id="password" autocomplete="on" required placeholder="Password">
+            <form>
+                <h2 id="emailError">Email</h2>
+                <input type="email" id="email" autocomplete="on" required placeholder="Email">
 
-            <h2>Email</h2>
-            <input type="email" id="email" autocomplete="on" required placeholder="Email">
+                <h2 id="passwordError">Password</h2>
+                <input type="password" id="password" autocomplete="on" required placeholder="Password">
 
-            <input type="submit" value="Login" id="login">
-        </form>
+                <input type="submit" value="Login" id="login">
+            </form>
+
+            <div class="loginSwitch">
+                <p>Don't have an account?</p>
+                <a href="signup.html">Register</a>
+            </div>
+        </section>
 
         <script>
             function getAllForms() {
                 const password = document.getElementById("password").value;
                 const email = document.getElementById("email").value;
 
-                return { email, password };
+                return { password, email };
             }
 
             document.getElementById("login").addEventListener("click", () => {
                 event.preventDefault();
 
-                const formComplete = document.getElementById("email").value && document.getElementById("password").value;
+                const formComplete = document.getElementById("password").value && document.getElementById("email").value;
 
                 if (formComplete) {
                     Auth.login();
                 }
                 else {
-                    console.warn("Please fill in all fields.");
+                    showFieldsNotComplete();
                 }
             });
+
+            function showFieldsNotComplete() {
+                const { password, email } = getAllForms();
+
+                if (!password) {
+                    document.getElementById("passwordError").classList.add("error");
+                }
+
+                if (!email) {
+                    document.getElementById("emailError").classList.add("error");
+                }
+
+                setTimeout(() => {
+                    document.getElementById("passwordError").classList.remove("error");
+                    document.getElementById("emailError").classList.remove("error");
+                }, 2000);
+            }
         </script>
         <script type="module" src="scripts/auth.js"></script>
     </body>

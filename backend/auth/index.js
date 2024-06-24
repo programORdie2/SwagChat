@@ -4,8 +4,8 @@ const { genSalt, hash, compare } = require("bcryptjs");
 const md5 = require("md5-js");
 
 const { findOne, create } = require("./userModel.js");
-
 const { handleAvatar } = require("../imageProccessor.js");
+const { validateEmail, validatePassword, validateUsername } = require("./validator.js");
 
 let loginRateLimiterData = {};
 
@@ -34,6 +34,18 @@ function sendSuccess(message) {
 async function registerUser(email, password, data) {
     if (!email || !password) {
         return sendError("Please add all fields");
+    }
+
+    if (!validateEmail(email)) {
+        return sendError("Invalid email");
+    }
+
+    if (!validatePassword(password)) {
+        return sendError("Invalid password");
+    }
+
+    if (!validateUsername(data.username)) {
+        return sendError("Invalid username");
     }
 
     // check if user exists
