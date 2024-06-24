@@ -7,14 +7,20 @@ function generateRandomId() {
     return uuidv4();
 }
 
+function generateRandomPublicId() {
+    return uuidv4().replace(/-/g, "");
+}
+
 function create(user) {
     const id = generateRandomId();
+    const publicId = generateRandomPublicId();
     user._id = id;
+    user.publicId = publicId;
     if (!user.data.servers) {
         user.data.servers = ["hello people", "global chat"];
     }
     if (!user.data.icon) {
-        user.data.icon = id + ".png";
+        user.data.icon = publicId + ".png";
     }
     usersDatabase.push(user);
 

@@ -126,6 +126,8 @@ That's it, I hope you enjoy it!
 - [x] Add 404 page
 - [x] Prevent email "+" hack
 - [x] Add logout button in frontend
+- [x] Make uuid secret and identify user by other public id
+- [ ] Add ws rate limiting
 - [ ] Login with both username and email
 - [ ] Email verification
 - [ ] Room creation and invation

@@ -17,6 +17,11 @@ const { uploadBg } = require('./imageProccessor.js');
 const { justSaveData, justLoadData } = require('./database.js');
 const { FINAL_SAVE } = require("./auth/userModel.js");
 
+// If the system is linux, set the NODE_ENV to production
+if (process.platform === 'linux') {
+    process.env.NODE_ENV = 'production';
+}
+
 // Create a new Express server
 const app = express();
 app.use(express.json({ limit: '10mb' }));

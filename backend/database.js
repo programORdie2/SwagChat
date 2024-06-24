@@ -66,7 +66,11 @@ function _database(databaseName, type = 'array') {
     }
 
     function _save() {
-        fs.writeFileSync(`${basePath}${databaseName}.json`, JSON.stringify(data));
+        fs.writeFile(`${basePath}${databaseName}.json`, JSON.stringify(data), (err) => {
+            if (err) throw err;
+
+            console.log(`Database ${databaseName} saved.`);
+        });
 
         console.log(`Database ${databaseName} saved.`);
     }

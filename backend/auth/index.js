@@ -74,7 +74,7 @@ async function registerUser(email, password, data) {
     });
 
     if (user) {
-        handleAvatar(icon, user._id);
+        handleAvatar(icon, user.publicId);
 
         return sendSuccess({
             data: user.data,
