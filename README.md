@@ -125,7 +125,7 @@ That's it, I hope you enjoy it!
 - [x] Sanitize user input
 - [x] Add 404 page
 - [x] Prevent email "+" hack
-- [ ] Add logout button in frontend
+- [x] Add logout button in frontend
 - [ ] Login with both username and email
 - [ ] Email verification
 - [ ] Room creation and invation

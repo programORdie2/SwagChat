@@ -235,6 +235,24 @@ function main() {
         document.getElementById('usersOnlineContainer').classList.toggle('collapsed');
         document.getElementById('usersCollapse').classList.toggle('collapsed');
     });
+
+    document.getElementById("currentUser").addEventListener("click", () => {
+        document.getElementById("userMenu").classList.toggle('collapsed');
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!document.getElementById('userMenu').contains(event.target) && !document.getElementById('currentUser').contains(event.target)) {
+            document.getElementById("userMenu").classList.add('collapsed');
+        }
+    });
+
+    document.getElementById("signOutButton").addEventListener("click", () => {
+        document.cookie = "token=; path=/; max-age=0";
+        if (window.parent !== window) {
+            window.parent.location.reload();
+        }
+        window.location = "/";
+    });
 }
 
 // Makes sure the page is loaded before running the code.

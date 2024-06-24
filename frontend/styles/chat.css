@@ -218,6 +218,7 @@ a {
     margin-top: 0.4em;
     margin-bottom: 0.55em;
     width: calc(100% - 1em);
+    cursor: pointer;
 }
 
 .currentUser .user {
@@ -682,4 +683,76 @@ a:active {
     box-shadow: var(--shadow);
     border: none;
     outline: none;
+}
+
+.userMenu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.8em;
+    border-radius: calc(var(--user-border-radius) * 2);
+    background-color: var(--dark-lighted);
+    backdrop-filter: var(--blur);
+    box-shadow: var(--shadow);
+    border: none;
+    outline: none;
+    color: var(--main-text-color);
+    position: absolute;
+    top: -100%;
+    right: 0px;
+    z-index: 100;
+    border: 1px solid var(--highligh-ops);
+    transition: all 0.2s ease;
+}
+
+.userMenu.collapsed {
+    top: 0px;
+    max-height: 0px;
+    opacity: 0;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.userMenu::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 9px) rotate(45deg);
+    width: 18px;
+    height: 18px;
+    background-color: var(--dark-lighted);
+    border-radius: 2px;
+    border: 1px solid var(--highligh-ops);
+    border-top-color: transparent;
+    border-left-color: transparent;
+    z-index: 100;
+}
+
+#signOutButton {
+    padding: 0.8em;
+    width: 100%;
+    border-radius: calc(var(--user-border-radius) * 2);
+    background-color: var(--highligh-ops);
+    backdrop-filter: var(--blur);
+    box-shadow: var(--shadow);
+    border: none;
+    outline: none;
+    color: rgb(255, 93, 93);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    position: relative;
+    z-index: 101;
+    border: 1px solid var(--highligh-ops);
+    transition: all 0.2s ease;
+}
+
+#signOutButton:hover {
+    background-color: var(--highligh-ops-small);
+}
+
+.userMenu.collapsed #signOutButton {
+    display: none;
 }

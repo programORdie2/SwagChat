@@ -80,10 +80,19 @@ async function validate() {
     console.log(data);
 }
 
+function signOut() {
+    document.cookie = "token=; path=/; max-age=0";
+    if (window.parent !== window) {
+        window.parent.location.reload();
+    }
+    window.location = "/";
+}
+
 const Auth = {
     login,
     register,
     validate,
+    signOut,
 };
 
 window.Auth = Auth;

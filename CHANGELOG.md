@@ -1,5 +1,19 @@
 # This is a list of all updates
 
+## v0.0.13
+ - UI Updates
+   - Made register and login UI
+   - Added logout button in the app
+   - Added sign in/up error
+   - Added a 404 page
+ - Security updates
+   - Prevent 2 users from having the same email
+   - Added message sanitazion
+   - Added username, email and password type safety
+   - Login ratelimiting
+ - Save the databases on program stop
+ - Added GZIP
+
 ## v0.0.12
  - Added a room database
  - Improved database script
