@@ -129,10 +129,10 @@ That's it, I hope you enjoy it!
 - [x] Make uuid secret and identify user by other public id
 - [x] Add ws rate limiting
 - [x] Add overlay when ws isn't connected
-- [ ] Beter UI
+- [x] Beter UI
 - [ ] Make phone friendly (current phone view is sh!t)
 - [x] Login with both username and email
-- [ ] Room creation and invation
+- [ ] Room creation and invitation
 - [ ] Rooms browser
 - [ ] Email verification
 

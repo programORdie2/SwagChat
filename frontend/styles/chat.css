@@ -23,12 +23,14 @@ html {
     margin-left: auto;
     padding-right: 0.4em;
     width: 22em;
-    height: calc(100vh - 2.25em);
+    min-height: 100%;
     position: relative;
     font-size: 1.05em;
     backdrop-filter: var(--blur);
     box-shadow: var(--shadow);
     margin-top: -0.1em;
+    background-color: var(--darken-ops);
+    border-left: 1px solid var(--highligh-ops);
 }
 
 .usersOnlineContainer h2 {
@@ -53,6 +55,7 @@ html {
     border-radius: var(--user-border-radius);
     color: var(--main-text-color);
     overflow: hidden;
+    border: 1px solid var(--highligh-ops-small);
 }
 
 .usersOnline .user img,
@@ -120,7 +123,7 @@ html {
 }
 
 .title {
-    background-color: var(--highligh-ops-small);
+    background-color: var(--darken-ops);
     border-bottom: 1px solid var(--highligh-ops);
     width: 100%;
     margin-top: 0px;
@@ -133,12 +136,6 @@ html {
     backdrop-filter: var(--blur);
 }
 
-.version {
-    color: var(--small-dark-text-color-ops);
-    font-size: 0.8em;
-    margin-top: 0.3em;
-}
-
 .messageInputContainer {
     position: relative;
 }
@@ -146,8 +143,8 @@ html {
 #messageButton {
     margin-top: 0.65em;
     padding: 0.5em;
-    background-color: var(--highligh-ops);
-    border: none;
+    background-color: var(--highligh-ops-small);
+    border: 1px solid var(--highligh-ops);
     border-radius: calc(var(--user-border-radius) * 4);
     width: 4em;
     height: calc(100% - 1em);
@@ -165,8 +162,8 @@ html {
     padding: 1.1em 1em;
     margin-left: 0.6em;
     margin-top: 0.3em;
-    background-color: var(--highligh-ops);
-    border: none;
+    background-color: var(--darken-ops);
+    border: 1px solid var(--highligh-ops);
     border-radius: calc(var(--user-border-radius) * 5);
     width: calc(100% - 1.2em);
     display: block;
@@ -182,24 +179,15 @@ html {
 
 .menu {
     background-color: var(--darken-ops);
-    width: 20em;
-    padding-top: 0em;
-    padding-bottom: 0em;
-    margin-top: -2.3em;
+    width: 16em;
+    margin-top: -0.1em;
+    padding-bottom: 0;
     position: relative;
     backdrop-filter: var(--blur);
     box-shadow: var(--shadow);
-    height: calc(100vh + 2.3em);
-}
-
-.menu .about {
-    background-color: var(--darken-ops);
-    border-radius: calc(var(--user-border-radius) * 5);
-    padding: 0.8em;
-    padding-top: 1px;
-    padding-bottom: 1px;
-    margin-bottom: 0.6em;
-    margin-top: 0.9em;
+    min-height: 100%;
+    flex-shrink: 0;
+    border-right: 1px solid var(--highligh-ops);
 }
 
 a {
@@ -219,6 +207,8 @@ a {
     margin-bottom: 0.55em;
     width: calc(100% - 1em);
     cursor: pointer;
+    border: 1px solid var(--highligh-ops);
+    backdrop-filter: var(--blur);
 }
 
 .currentUser .user {
@@ -608,7 +598,8 @@ a:active {
     margin: 0px;
 }
 
-#menuCollapse, #usersCollapse {
+#menuCollapse,
+#usersCollapse {
     cursor: pointer;
     width: 20px;
     height: 20px;
@@ -616,18 +607,20 @@ a:active {
     -webkit-mask: url('../images/ui/menu.svg') no-repeat center;
     background-color: var(--main-text-color);
 }
+
 #usersCollapse {
     mask: url('../images/ui/users.svg') no-repeat center;
     -webkit-mask: url('../images/ui/users.svg') no-repeat center;
     background-color: var(--main-text-color);
 }
 
-#menuCollapse.collapsed, #usersCollapse.collapsed {
+#menuCollapse.collapsed,
+#usersCollapse.collapsed {
     background-color: var(--text-color-ops);
 }
 
 .chat {
-    height: calc(100vh - 2.5em);
+    height: 100%;
 }
 
 #rooms .room {
@@ -635,7 +628,6 @@ a:active {
     width: 100%;
     height: 2.75em;
     padding: 0.7em;
-    /* border-radius: calc(var(--user-border-radius) * 2); */
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -664,7 +656,7 @@ a:active {
     content: '';
     position: absolute;
     left: 10px;
-    margin-top: calc(25% - 4px);
+    margin-top: calc(25% - 11px);
     width: calc(100% - 20px);
     height: 0.5px;
     border-radius: calc(var(--user-border-radius) * 2);
@@ -689,7 +681,7 @@ a:active {
 }
 
 .top {
-    margin-top: 2.8em;
+    margin-top: 0.4em;
     width: 100%;
 }
 
@@ -815,12 +807,14 @@ a:active {
         letter-spacing: 0em;
         opacity: 0;
     }
+
     30% {
         font-size: 2.75em;
         font-weight: 600;
         letter-spacing: 0.1em;
         opacity: 1;
     }
+
     100% {
         font-size: 3em;
         font-weight: 600;
@@ -849,9 +843,11 @@ a:active {
     0% {
         opacity: 0;
     }
+
     90% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
     }

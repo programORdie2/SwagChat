@@ -21,53 +21,51 @@
             <div class="loader"></div>
         </div>
 
-        <div class="flex" style="width: 100vw; overflow: hidden;">
-            <div class="menu flex column space-between" id="menu" style="align-items: center;">
-                <div class="top">
-                    <div id="rooms"></div>
-                </div>
-
-                <div class="bottom flex column" style="position: relative;">
-                    <div class="currentUser" id="currentUser"></div>
-                    <div class="userMenu collapsed" id="userMenu">
-                        <button id="signOutButton">Sign Out</button>
-                    </div>
+        <div class="flex column" style="width: 100%; height: 100%; overflow: hidden;">
+            <div class="title flex space-between">
+                <div id="menuCollapse"></div>
+                <p class="flex margin0">SwagChat</p>
+                <div class="flex">
+                    <div id="changeWallpaper"></div>
+                    <span class="divider">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                    <div id="usersCollapse"></div>
                 </div>
             </div>
-            <div class="flex column" style="width:100%">
-                <div class="title flex space-between">
-                    <div id="menuCollapse"></div>
-                    <p class="flex margin0">SwagChat</p>
-                    <div class="flex">
-                        <div id="changeWallpaper"></div>
-                        <span class="divider">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-                        <div id="usersCollapse"></div>
-                    </div>
-                </div>
-                <div class="chat flex">
-                    <div class="flex column" style="width: 100%;">
-                        <div id="messages" class="messages"></div>
-                        <div class="messageInputContainer">
-                            <input id="messageInput" type="text" placeholder="Message ..." autocomplete="off"
-                                autofocus />
-                            <div>
-                                <button id="messageButton">Send</button>
-                            </div>
-                        </div>
-                        <p class="center-text creator">Made by <a href="https://pod.stio.studio" target="_blank"
-                                title="programORdie">programORdie</a>.</p>
+            <div class="chat flex">
+                <div class="menu flex column space-between" id="menu" style="align-items: center;">
+                    <div class="top">
+                        <div id="rooms"></div>
                     </div>
 
-                    <div class="usersOnlineContainer" id="usersOnlineContainer">
-                        <h2>Online:</h2>
-                        <div id="usersOnline" class="usersOnline scrollbarHidden"></div>
+                    <div class="bottom flex column" style="position: relative;">
+                        <div class="currentUser" id="currentUser"></div>
+                        <div class="userMenu collapsed" id="userMenu">
+                            <button id="signOutButton">Sign Out</button>
+                        </div>
                     </div>
+                </div>
+
+                <div class="flex column" style="width: 100%;">
+                    <div id="messages" class="messages"></div>
+                    <div class="messageInputContainer">
+                        <input id="messageInput" type="text" placeholder="Message ..." autocomplete="off" autofocus />
+                        <div>
+                            <button id="messageButton">Send</button>
+                        </div>
+                    </div>
+                    <p class="center-text creator">Made by <a href="https://pod.stio.studio" target="_blank"
+                            title="programORdie">programORdie</a>.</p>
+                </div>
+
+                <div class="usersOnlineContainer" id="usersOnlineContainer">
+                    <h2>Online:</h2>
+                    <div id="usersOnline" class="usersOnline scrollbarHidden"></div>
                 </div>
             </div>
         </div>
 
         <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-        
+
         <script src="/scripts/messaging.js"></script>
         <script src="/scripts/render.js"></script>
         <script src="/scripts/upload.js"></script>
