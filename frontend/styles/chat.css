@@ -775,3 +775,84 @@ a:active {
 .userMenu.collapsed #signOutButton {
     display: none;
 }
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--dark-lighted);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 99999;
+    visibility: visible;
+    transition: all 0.7s ease;
+    opacity: 1;
+}
+
+#overlay.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+#overlay.hidden {
+    visibility: hidden;
+    opacity: 0;
+}
+
+#overlay span {
+    color: var(--main-text-color);
+    animation: zoomText 2s ease-out forwards;
+}
+
+@keyframes zoomText {
+    0% {
+        font-size: 1em;
+        font-weight: 600;
+        letter-spacing: 0em;
+        opacity: 0;
+    }
+    30% {
+        font-size: 2.75em;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        opacity: 1;
+    }
+    100% {
+        font-size: 3em;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        opacity: 1;
+    }
+}
+
+.loader {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 5px solid var(--highligh-ops);
+    border-top-color: var(--text-color-ops);
+    animation: spinner 1.3s linear infinite, opacity-timout 3s linear forwards;
+    margin-top: 2em;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes opacity-timout {
+    0% {
+        opacity: 0;
+    }
+    90% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

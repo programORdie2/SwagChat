@@ -186,7 +186,24 @@ function main() {
     // Disconnect
     socket.on('disconnect', () => {
         console.warn('disconnected');
+        showOverlay();
     });
+
+    // Connection
+    socket.on('connect', () => {
+        console.log('connected');
+        hideOverlay();
+    });
+
+    function showOverlay() {
+        document.getElementById("overlay").classList.remove("hidden");
+        document.getElementById("overlay").classList.add("show");
+    }
+
+    function hideOverlay() {
+        document.getElementById("overlay").classList.remove("show");
+        document.getElementById("overlay").classList.add("hidden");
+    }
 
     // Makes you able to press enter to send the message or focus on the input.
     document.addEventListener("keypress", (event) => {
