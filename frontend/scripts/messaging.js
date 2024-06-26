@@ -1,4 +1,4 @@
-function makeMessage(html, outsideClick=true) {
+function makeMessage(html, outsideClick=true, extraClass=null) {
     const message = document.createElement("div");
     message.className = "_popup notReady";
     message.innerHTML = '<div>' + html + '</div>';
@@ -7,6 +7,7 @@ function makeMessage(html, outsideClick=true) {
             closePopup(message);
         }
     });
+    if (extraClass) message.classList.add(extraClass);
     document.body.appendChild(message);
     setTimeout(() => {
         message.classList.remove("notReady");
@@ -22,7 +23,14 @@ function closePopup(popup) {
 
 function showError(title, message) {
     console.error(title, message);
-    alert(title + ": " + message);
+    // alert(title + ": " + message);
+    makeMessage('<h1>' + title + '</h1><p>' + message + '</p><a title="Close" class="closeMessage">Close</a>', true, 'errorMessage');
+    
+    const closes = document.querySelectorAll('.closeMessage');
+    const close = closes[closes.length - 1];
+    close.addEventListener('click', () => {
+        closePopup(close.parentElement.parentElement);
+    });
 }
 
 function showMessage(title, text, html, closeText = 'Close', withFile = false, outsideClick=true, callback=null) {

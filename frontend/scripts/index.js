@@ -168,6 +168,10 @@ function main() {
         showRooms();
     });
 
+    socket.on('timeout', (message) => {
+        showError('Request timed out', message);
+    });
+
     // Reconnect
     socket.io.on('reconnect', () => {
         console.log('reconnected');

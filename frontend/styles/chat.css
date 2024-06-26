@@ -537,6 +537,25 @@ a:active {
     scale: 0.98;
 }
 
+._popup.errorMessage>div {
+    background-color: #ff4c4c0a;
+    border: 4px solid #671919;
+}
+
+._popup.errorMessage .closeMessage {
+    background-color: #c00000;
+    border: 2.4px solid #671919;
+    text-decoration: none !important;
+    padding: 0.6em 1em;
+
+    transition: all 0.2s ease;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #9f0000;
+    }
+}
+
 .spinner {
     position: relative;
     width: 20px;

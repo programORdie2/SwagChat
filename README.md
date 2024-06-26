@@ -127,11 +127,13 @@ That's it, I hope you enjoy it!
 - [x] Prevent email "+" hack
 - [x] Add logout button in frontend
 - [x] Make uuid secret and identify user by other public id
-- [ ] Add ws rate limiting
+- [x] Add ws rate limiting
+- [ ] Beter UI
+- [ ] Make phone friendly (current phone view is sh!t)
 - [ ] Login with both username and email
-- [ ] Email verification
 - [ ] Room creation and invation
 - [ ] Rooms browser
+- [ ] Email verification
 
 See the [open issues](https://github.com/programORdie2/SwagChat/issues) for a full list of proposed features (and known issues).
 

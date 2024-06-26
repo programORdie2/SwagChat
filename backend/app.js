@@ -17,6 +17,18 @@ const { uploadBg } = require('./imageProccessor.js');
 const { justSaveData, justLoadData } = require('./database.js');
 const { FINAL_SAVE } = require("./auth/userModel.js");
 
+const requests_timout = {
+    join: 0.5,
+    send: 0.5,
+    bgUpload: 60
+}
+
+const timeout_info = {
+    join: "Whoa, not so fast! Please wait a bit before joining",
+    send: "Whoa, not so fast! Please wait a bit before sending another message",
+    bgUpload: "Whoa, not so fast! Please wait a bit before uploading a new background"
+}
+
 // If the system is linux, set the NODE_ENV to production
 if (process.platform === 'linux') {
     process.env.NODE_ENV = 'production';
@@ -70,7 +82,6 @@ createFolder('./backend/uploads/icons');
 
 // API Routes
 app.post('/login', asyncHandler(async (req, res) => {
-    console.log('POST /login');
     const { email, password } = req.body;
     const user = await Auth.loginUser(email, password);
     if (user.success) {
@@ -107,10 +118,8 @@ app.get('/', asyncHandler(async (req, res) => {
     }
 
     const user = Auth.validateToken(token);
-    console.log('User:', user);
 
     if (!user || !user.success) {
-        console.log('Clearing cookie');
         res.clearCookie('token');
 
         res.sendFile(join(__dirname, '/notAuthorized.html'));
@@ -219,12 +228,11 @@ wss.on('connection', function connection(ws) {
     const user = Auth.validateToken(TOKEN, allData = true);
 
     if (!user || !user.success) {
-        console.log('Invalid token:', TOKEN);
         ws.disconnect();
         return;
     }
 
-    console.log('Authenticated:', user);
+    let sendRequests = {};
 
     const currentUser = {
         username: user.data.data.name,
@@ -233,6 +241,9 @@ wss.on('connection', function connection(ws) {
     };
 
     ws.on('join', ({ roomname }) => {
+        if (!shouldHandleEvent('join')) return;
+
+        if (!roomname) return;
         if (currentUsers[ws.id]) {
             const user = currentUsers[ws.id];
             wss.to(user.room).emit('userLeft', { username: user.username, icon: user.icon });
@@ -259,21 +270,19 @@ wss.on('connection', function connection(ws) {
         ws.emit('users', publicUsers(rooms[user.room].users));
         ws.emit('allMessages', rooms[user.room].lastMessages);
         ws.emit('bg', rooms[user.room].chatBg);
-
-        // sendInRoom('Hi! I joined the chat', user);
-
-        console.log('User joined:', user, ' in room:', user.room);
     });
 
     ws.on('send', ({ message }) => {
+        if (!shouldHandleEvent('send')) return;
+
         message = sanitize(message);
         const user = currentUsers[ws.id];
         sendInRoom(message, user);
-        console.log('User sent message:', message, ' in room:', user.room);
     });
 
     ws.on('bgUpload', (dataUrl) => {
-        console.log('bgUpload');
+        if (!shouldHandleEvent('bgUpload')) return;
+
         const user = currentUsers[ws.id];
         if (!dataUrl) return;
         if (!user) return;
@@ -294,6 +303,34 @@ wss.on('connection', function connection(ws) {
 
         console.log('User disconnected:', user.username);
     });
+
+    const denyHandlingEvent = (event) => {
+        const message = timeout_info[event] || 'Request timed out, please try again.';
+        ws.emit('timeout', message);
+    };
+
+    const shouldHandleEvent = ((event) => {
+        if (!requests_timout[event]) {
+            console.warn('Cannot handle event:', event);
+            return true; // No timeout
+        }
+
+        if (!sendRequests[event]) {
+            sendRequests[event] = Date.now();
+            return true;
+        }
+
+        const timeleft = (sendRequests[event] + requests_timout[event] * 1000) - Date.now();
+
+        if (timeleft < 0) {
+            sendRequests[event] = Date.now();
+            return true;
+        }
+
+        denyHandlingEvent(event);
+
+        return false;
+    });
 });
 
 const PORT = process.env.PORT || 5083;
@@ -304,8 +341,6 @@ server.listen(PORT, () => {
         input: process.stdin,
         output: process.stdout
     });
-
-
 
     rl.question('Do you want to open the browser? [Y/N] \n', (answer) => {
         if (answer.toLowerCase() === 'y') {
