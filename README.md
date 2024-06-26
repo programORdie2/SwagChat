@@ -130,7 +130,7 @@ That's it, I hope you enjoy it!
 - [x] Add ws rate limiting
 - [ ] Beter UI
 - [ ] Make phone friendly (current phone view is sh!t)
-- [ ] Login with both username and email
+- [x] Login with both username and email
 - [ ] Room creation and invation
 - [ ] Rooms browser
 - [ ] Email verification

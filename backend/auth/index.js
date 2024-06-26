@@ -85,21 +85,28 @@ async function registerUser(email, password, data) {
     }
 };
 
-async function loginUser(email, password) {
-    if (!email || !password) {
-        return sendError("Please add all fields", email);
+async function loginUser(emailorname, password) {
+    if (!emailorname || !password) {
+        return sendError("Please add all fields", emailorname);
     }
 
-    if (loginRateLimiterData[email]) {
-        if (loginRateLimiterData[email] >= 5) {
-            return sendError("Too many login attempts", email);
+    if (loginRateLimiterData[emailorname]) {
+        if (loginRateLimiterData[emailorname] >= 5) {
+            return sendError("Too many login attempts", emailorname);
         }
     }
 
     // Check for user email
-    const user = await findOne({ email });
+    let user = await findOne({ email: emailorname });
+    if (!user) {
+        // Check for user name
+        user = await findOne({ name: emailorname });
+        if (!user) {
+            return sendError("Invalid credentials", emailorname);
+        }
+    }
 
-    if (user && (await compare(password, user.password))) {
+    if (await compare(password, user.password)) {
         return sendSuccess({
             data: user.data,
             token: generateToken(user._id),
