@@ -12,8 +12,7 @@ const BG_SIZE_PX = 1600;
  * @return {void} This function does not return anything.
  */
 function handleAvatar(base64, userid) {
-    const ext = base64.split(';')[0].split('/')[1];
-    // const ext = 'png';
+    const ext = 'png';
     const path = `./backend/uploads/icons/${userid}_processing.${ext}`;
     const data = base64.replace(/^data:image\/\w+;base64,/, '');
 
@@ -27,21 +26,18 @@ function handleAvatar(base64, userid) {
             console.error('Error writing file:', err);
             return;
         }
-        console.log('File saved:', path);
 
         sharp(path).resize({ width: 256, height: 256 }).png().toFile(`./backend/uploads/icons/${userid}.png`, (err) => {
             if (err) {
                 console.error('Error resizing file:', err);
                 return;
             }
-            console.log('File resized:', `./backend/uploads/icons/${userid}.png`);
 
             fs.unlink(path, (err) => {
                 if (err) {
                     console.error('Error deleting file:', err);
                     return;
                 }
-                console.log('File deleted:', path);
             });
         });
     });
@@ -66,10 +62,8 @@ function uploadBg(dataUrl, room, callback) {
             console.error('Error uploading file:', err);
             return;
         }
-        console.log('File uploaded:', location_processing);
 
         const dimensions = sizeOf(`./backend${location_processing}`);
-        console.log('Dimensions:', dimensions.width, dimensions.height);
 
         let width = BG_SIZE_PX;
         let height = BG_SIZE_PX;
@@ -87,14 +81,11 @@ function uploadBg(dataUrl, room, callback) {
         width = Math.round(width);
         height = Math.round(height);
 
-        console.log('New dimensions:', width, height);
-
         sharp(`./backend${location_processing}`).resize({ width: width, height: height }).png().toFile(`./backend/${location}`, (err) => {
             if (err) {
                 console.error('Error resizing file:', err);
                 return;
             }
-            console.log('File resized:', `./backend/uploads/wallpaper/${room}.${filetype}`);
 
             callback(location);
 
@@ -103,7 +94,6 @@ function uploadBg(dataUrl, room, callback) {
                     console.error('Error deleting file:', err);
                     return;
                 }
-                console.log('File deleted:', location_processing);
             });
         });
     });

@@ -119,7 +119,7 @@ async function loginUser(emailorname, password) {
 function validateToken(token, allData = false) {
     try {
         const user = verify(token, process.env.JWT_SECRET);
-        const data = findOne({ id: user.id });
+        const data = findOne({ _id: user.id });
 
         if (!data) {
             console.warn("User not found");

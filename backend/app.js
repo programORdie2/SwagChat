@@ -14,19 +14,30 @@ const asyncHandler = require("express-async-handler");
 
 const Auth = require('./auth/index.js');
 const { uploadBg } = require('./imageProccessor.js');
-const { justSaveData, justLoadData } = require('./database.js');
-const { FINAL_SAVE } = require("./auth/userModel.js");
+const { FINAL_SAVE_USERS, findOne } = require("./auth/userModel.js");
+const { FINAL_SAVE_ROOMS, roomManager } = require("./roomManager.js");
+
+// Doesn't need a real db, since all the users rejoin anyway when the connection is lost
+let currentUsers = {};
+
+let rooms = roomManager;
 
 const requests_timout = {
     join: 0.5,
     send: 0.5,
-    bgUpload: 60
+    bgUpload: 60,
+    userDatas: 0.5
 }
 
 const timeout_info = {
     join: "Whoa, not so fast! Please wait a bit before joining",
     send: "Whoa, not so fast! Please wait a bit before sending another message",
     bgUpload: "Whoa, not so fast! Please wait a bit before uploading a new background"
+}
+
+function FINAL_SAVE() {
+    FINAL_SAVE_USERS();
+    FINAL_SAVE_ROOMS();
 }
 
 // If the system is linux, set the NODE_ENV to production
@@ -147,20 +158,6 @@ app.get('*', (req, res) => {
     res.sendFile(filename);
 });
 
-// Maximum number of messages to keep in memory to prevent memory leaks
-const CACHE_MESSAGES = 20;
-
-// Doesn't need a real db, since all the users rejoin anyway when the connection is lost
-let currentUsers = {};
-
-// Load the rooms from the database
-let rooms = justLoadData('rooms');
-
-// Save the rooms to the database every minute
-setInterval(() => {
-    justSaveData('rooms', rooms);
-}, 60000);
-
 function sanitize(message) {
     const entityMap = {
         '&': '&amp;',
@@ -171,7 +168,7 @@ function sanitize(message) {
         '/': '&#x2F;',
         '`': '&#x60;',
         '=': '&#x3D;'
-      };
+    };
 
     return String(message).replace(/[&<>"'`=\/]/g, function (s) {
         return entityMap[s];
@@ -190,8 +187,9 @@ function sanitize(message) {
 function addUser(id, room, userData) {
     const icon = userData.icon;
     const username = userData.username;
-    currentUsers[id] = { username, room, icon };
-    return { id, username, room, icon };
+    const publicId = userData.publicId;
+    currentUsers[id] = { username, room, icon, publicId };
+    return { id, username, room, icon, publicId };
 }
 
 /**
@@ -203,19 +201,7 @@ function addUser(id, room, userData) {
  */
 function sendInRoom(message, user) {
     wss.to(user.room).emit('message', { message, user: user.username, icon: user.icon });
-    rooms[user.room].lastMessages.push({ user: user.username, message, icon: user.icon });
-    if (rooms[user.room].lastMessages.length > CACHE_MESSAGES) {
-        rooms[user.room].lastMessages.shift();
-    }
-}
-
-/**
- * Retrieves user data from the users array.
- *
- * @return {Array} An array of objects containing the username and icon of each user.
- */
-function publicUsers(users) {
-    return users.map(u => ({ username: u.username, icon: u.icon }));
+    rooms.addMessage({ roomId: user.room, user, message });
 }
 
 /**
@@ -237,8 +223,11 @@ wss.on('connection', function connection(ws) {
     const currentUser = {
         username: user.data.data.name,
         icon: user.data.data.icon,
-        servers: user.data.data.servers
+        servers: user.data.data.servers,
+        publicId: user.data.publicId
     };
+
+    ws.emit('load', { username: currentUser.username, icon: currentUser.icon }, rooms.getBasicRoomInfos(currentUser.servers));
 
     ws.on('join', ({ roomname }) => {
         if (!shouldHandleEvent('join')) return;
@@ -247,29 +236,25 @@ wss.on('connection', function connection(ws) {
         if (currentUsers[ws.id]) {
             const user = currentUsers[ws.id];
             wss.to(user.room).emit('userLeft', { username: user.username, icon: user.icon });
-            rooms[user.room].users = rooms[user.room].users.filter(u => u.username !== user.username);
+            rooms.removeUserFromOnlineList(user.room, user.publicId);
             ws.leave(user.room);
         }
         let user = addUser(ws.id, roomname, {
             username: currentUser.username.toLocaleLowerCase(),
-            icon: currentUser.icon
+            icon: currentUser.icon,
+            publicId: currentUser.publicId
         });
         ws.join(user.room);
 
-        if (!rooms[user.room]) {
-            rooms[user.room] = {
-                lastMessages: [],
-                chatBg: '',
-                users: []
-            }
+        if (!rooms.getRoom(user.room)) {
+            rooms.createRoom(user.room);
         }
 
-        rooms[user.room].users.push(user);
+        rooms.addOnlineUser(user.room, user.publicId);
         wss.to(user.room).emit('userJoined', { username: user.username, icon: user.icon });
-        ws.emit('load', { username: user.username, icon: user.icon }, currentUser.servers);
-        ws.emit('users', publicUsers(rooms[user.room].users));
-        ws.emit('allMessages', rooms[user.room].lastMessages);
-        ws.emit('bg', rooms[user.room].chatBg);
+        ws.emit('users', rooms.getOnlineList(user.room));
+        ws.emit('allMessages', rooms.getMessages(user.room));
+        ws.emit('bg', rooms.getChatBg(user.room));
     });
 
     ws.on('send', ({ message }) => {
@@ -288,7 +273,7 @@ wss.on('connection', function connection(ws) {
         if (!user) return;
 
         uploadBg(dataUrl, user.room, (location) => {
-            rooms[user.room].chatBg = location;
+            rooms.setChatBg(user.room, location);
             wss.to(user.room).emit('bg', location);
         });
     });
@@ -299,9 +284,20 @@ wss.on('connection', function connection(ws) {
 
         wss.to(user.room).emit('userLeft', { username: user.username, icon: user.icon });
         delete currentUsers[ws.id];
-        rooms[user.room].users = rooms[user.room].users.filter(u => u.username !== user.username);
+        rooms.removeUserFromOnlineList(user.room, user.username);
 
         console.log('User disconnected:', user.username);
+    });
+
+    ws.on('userDatas', (userids, callback) => {
+        if (!shouldHandleEvent('userDatas')) return;
+
+        const data = {};
+        userids.forEach(id => {
+            const user = findOne({ id });
+            if (user) data[id] = { username: user.data.name, icon: user.data.icon };
+        });
+        callback(data);
     });
 
     const denyHandlingEvent = (event) => {
@@ -355,17 +351,18 @@ let saved = false;
 async function exitHandler() {
     if (saved) return;
     saved = true;
+
     console.log('Closing server...');
-    console.log('Saving user data...');
-    FINAL_SAVE();
-    console.log('Saving rooms...');
-    justSaveData('rooms', rooms);
-    console.log('Bye bye!');
     wss.close();
     server.close();
+
+    console.log('Saving users and rooms data...');
+    FINAL_SAVE();
+
+    console.log('Bye bye!');
     process.exit();
 }
 
 process.on('SIGINT', exitHandler);
 process.on('SIGTERM', exitHandler);
-process.on('uncaughtException', exitHandler);
+// process.on('uncaughtException', exitHandler);

@@ -20,7 +20,9 @@ let usersOnline = [];
 // Array to store the rooms
 let rooms = [];
 // Define the current room
-let roomID = 'hello people';
+let roomID = '';
+
+const cachedUserData = {};
 
 function main() {
     const TOKEN = document.cookie.split(";").find(row => row.startsWith("token=")).split("=")[1] || '';
@@ -30,7 +32,6 @@ function main() {
 
     // Connection opened
     console.log("Connection open ");
-    switchToRoom(roomID);
 
     // Makes it easier to add/remove data from all messages.
     function socket_emit(event, data) {
@@ -46,9 +47,12 @@ function main() {
         const elements = document.getElementById('rooms').querySelectorAll('a');
         elements.forEach(element => {
             element.addEventListener('click', () => {
-                switchToRoom(element.dataset.roomid);
-                element.classList.remove('active');
                 roomID = element.dataset.roomid;
+                switchToRoom(roomID);
+                document.querySelectorAll('.active').forEach(element => {
+                    element.classList.remove('active');
+                });
+                element.classList.add('active');
             });
         });
     }
@@ -104,6 +108,35 @@ function main() {
         document.getElementById("messageButton").style.backgroundColor = "var(--highligh-ops)";
     });
 
+    function fetchUserDatas(userids) {
+        return new Promise((resolve, reject) => {
+            socket.emit('userDatas', userids, (otherUsers) => {
+                resolve(otherUsers);
+            });
+        });
+    }
+
+    async function getUserDatas(userids) {
+        const data = {};
+        const toFetch = [];
+        userids.forEach(username => {
+            if (data[username]) return;
+            if (cachedUserData[username]) {
+                data[username] = cachedUserData[username];
+                return;
+            }
+            toFetch.push(username);
+        });
+
+        console.log(toFetch);
+        if (toFetch.length === 0) return data;
+
+        const otherUsers = await fetchUserDatas(toFetch);
+        Object.assign(data, otherUsers);
+
+        return data;
+    }
+
     // Listen for messages
     socket.on("message", (received) => {
         console.log("Message from server ", received);
@@ -123,14 +156,22 @@ function main() {
         renderMessages();
     });
 
-    socket.on('users', (data) => {
+    socket.on('users', async (data) => {
         console.log('users:');
         console.log(data);
+
+        const userDatas = await getUserDatas(data);
+
+        console.log(userDatas);
+
         usersOnline = [];
         data.forEach(user => {
-            usersOnline.push(user);
+            console.log(userDatas[user]);
+            usersOnline.push(userDatas[user]);
         });
+
         console.log(usersOnline);
+
         renderUsersOnline();
     });
 
@@ -155,15 +196,25 @@ function main() {
     socket.on('bg', (data) => {
         console.log('bg:');
         console.log(data);
-        document.body.style.backgroundImage = `url('${data}?randomId=${Math.random() * 100000000}')`;
+
+        if (!data) {
+            document.body.style.backgroundImage = "";
+            return;
+        };
+        document.body.style.backgroundImage = `url('${data}?randomId=${Math.random()}')`;
     });
 
     socket.on('load', (userData, roomsData) => {
         icon = userData.icon;
         username = userData.username;
         thisUser = { username, icon };
+
+        console.log('load:', userData, roomsData);
+
         document.getElementById('currentUser').innerHTML = createUser(thisUser);
         rooms = roomsData;
+        roomID = roomsData[0].id;
+        switchToRoom(roomID);
 
         showRooms();
     });

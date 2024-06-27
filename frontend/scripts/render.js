@@ -28,12 +28,13 @@ function createMessage(message) {
 
 
 function createRoom(room) {
-    const name = room;
+    const name = room.name;
+    const id = room.id;
     let extraClass = '';
-    if (name === roomID) {
+    if (id === roomID) {
         extraClass = 'active';
     }
-    const HTML = '<a class="room ' + extraClass + '" title="' + name + '" data-roomid="' + name + '"><span>' + name + '</span></a>';
+    const HTML = '<a class="room ' + extraClass + '" title="' + name + '" data-roomid="' + id + '"><span>' + name + '</span></a>';
     return HTML;
 }
 

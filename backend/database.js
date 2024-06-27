@@ -9,10 +9,20 @@ if (!fs.existsSync(basePath)) {
 
 function _database(databaseName, type = 'array') {
     let changed = false;
-    let data = getAll();
+    let data = _getAll();
+
+    function _getAll() {
+        return JSON.parse(fs.readFileSync(`${basePath}${databaseName}.json`));
+    }
 
     function getAll() {
-        return JSON.parse(fs.readFileSync(`${basePath}${databaseName}.json`));
+        return data;
+    }
+
+    function setAllChild(key2, value) {
+        const keys = Object.keys(data);
+        keys.forEach((key) => data[key][key2] = value);
+        changed = true;
     }
 
     /**
@@ -49,28 +59,31 @@ function _database(databaseName, type = 'array') {
         changed = true;
     }
 
-    /**
-     * Finds a user in the database based on either their ID or email.
-     *
-     * @param {Object} options - An object containing either an ID or email.
-     * @param {string} options.id - The ID of the user to find.
-     * @param {string} options.email - The email of the user to find.
-     * @return {Object|null} The user object if found, or an object with a "data" property set to "No user found" if not found.
-     */
-    function findOne({ email, name, id }) {
-        if (id) return data.find((user) => user._id === id);
-        if (email) return data.find((user) => user.email === email);
-        if (name) return data.find((user) => user.data.name === name);
+    function pushChild(key1, parentKey, value, maxLength=-1) {
+        if (!data[key1]) {
+            console.error("No such key in database:", key1);
+            return;
+        }
 
-        return { data: "No user found" };
+        data[key1][parentKey].push(value);
+        if (maxLength > 0 && data[key1][parentKey].length > maxLength) {
+            data[key1][parentKey].shift();
+        }
+        changed = true;
+    }
+
+    function deleteItem(keyOrIndex) {
+        delete data[keyOrIndex];
+        changed = true;
+    }
+
+    function deleteItemChild(key1, parentKey, index) {
+        data[key1][parentKey].splice(index, 1);
+        changed = true;
     }
 
     function _save() {
-        fs.writeFile(`${basePath}${databaseName}.json`, JSON.stringify(data), (err) => {
-            if (err) throw err;
-
-            console.log(`Database ${databaseName} saved.`);
-        });
+        fs.writeFileSync(`${basePath}${databaseName}.json`, JSON.stringify(data));
 
         console.log(`Database ${databaseName} saved.`);
     }
@@ -87,8 +100,11 @@ function _database(databaseName, type = 'array') {
         get,
         set,
         push,
-        findOne,
+        pushChild,
         save: _save,
+        deleteItem,
+        deleteItemChild,
+        setAllChild
     };
 }
 
