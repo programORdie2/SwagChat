@@ -112,7 +112,7 @@ async function loginUser(emailorname, password) {
             token: generateToken(user._id),
         });
     } else {
-        return sendError("Invalid credentials", email);
+        return sendError("Invalid credentials", emailorname);
     }
 };
 

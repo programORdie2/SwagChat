@@ -9,10 +9,11 @@ body {
 
 iframe {
     margin: 0px;
-    width: 100%;
+    width: 100vw;
     height: 100%;
     border: none;
     display: none;
+    overflow: hidden;
 }
 
 iframe.selected {

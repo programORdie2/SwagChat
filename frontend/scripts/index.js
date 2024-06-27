@@ -244,8 +244,12 @@ function main() {
             document.getElementById('menu').classList.remove('collapsed');
             document.getElementById('menuCollapse').classList.remove('collapsed');
         }
+
+        if (navigator.userAgent.indexOf('iPhone') !== -1 && navigator.userAgent.indexOf('CriOS') !== -1) {
+            showError('Mobile device not supported', 'Please use a desktop browser, this site is not optimized for mobile devices.');
+        }
     }
-    window.onresize = makeResponsible;
+    document.addEventListener('resize', makeResponsible);
     makeResponsible();
 
     document.getElementById('menuCollapse').addEventListener('click', () => {
