@@ -142,7 +142,16 @@ app.get('*', (req, res) => {
     let filename = decodeURIComponent(join(__dirname, req.path));
     if (filename.endsWith('/')) { filename += 'index.html'; }
     const fileExists = existsSync(filename);
-    if (!fileExists) { console.warn('File not found:', filename); res.status(404).sendFile(join(__dirname, '/404.html')); return; }
+    if (!fileExists) {
+        if (req.path.startsWith('/chat')) {
+            res.sendFile(join(__dirname, '/index.html'));
+            return;
+        }
+
+        console.warn('File not found:', filename);
+        res.status(404).sendFile(join(__dirname, '/404.html'));
+        return;
+    }
     res.sendFile(filename);
 });
 

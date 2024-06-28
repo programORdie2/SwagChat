@@ -34,7 +34,7 @@ function createRoomDisplay(room) {
     if (id === roomID) {
         extraClass = 'active';
     }
-    const HTML = '<a class="room ' + extraClass + '" title="' + name + '" data-roomid="' + id + '"><span>' + name + '</span></a>';
+    const HTML = '<a class="room ' + extraClass + '" title="' + name + '" data-roomid="' + id + '" data-roomname="' + name + '"><span>' + name + '</span></a>';
     return HTML;
 }
 

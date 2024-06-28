@@ -38,8 +38,24 @@ function main() {
         socket.emit(event, data);
     }
 
-    function switchToRoom(roomId) {
+    function switchToRoom(roomId, roomName) {
         socket_emit('join', { roomname: roomId });
+        setUrl(`/chat/${roomId}`);
+        setTitle(roomName);
+    }
+
+    function setTitle(title) {
+        document.title = `SwagChat - ${title}`;
+    }
+
+    function setUrl(url) {
+        if (window.history && window.history.pushState) {
+            window.history.pushState({ path: url }, '', url);
+        }
+    }
+
+    function getUrlPath() {
+        return window.location.pathname.split('/').slice(1);
     }
 
     function showRooms() {
@@ -48,7 +64,10 @@ function main() {
         elements.forEach(element => {
             element.addEventListener('click', () => {
                 roomID = element.dataset.roomid;
-                switchToRoom(roomID);
+                const roomName = element.dataset.roomname;
+
+                switchToRoom(roomID, roomName);
+
                 document.querySelectorAll('.active').forEach(element => {
                     element.classList.remove('active');
                 });
@@ -212,9 +231,24 @@ function main() {
 
         document.getElementById('currentUser').innerHTML = createUser(thisUser);
         rooms = roomsData;
-        roomID = roomsData[0].id;
-        switchToRoom(roomID);
 
+        const roomIds = roomsData.map(room => room.id);
+        let roomName;
+
+        const url = getUrlPath();
+        if (url.length >= 2 && url[0] === 'chat' && roomIds.includes(url[1])) {
+            console.log('Room specified, using room ' + url[1]);
+
+            roomID = url[1];
+            roomName = rooms.find(room => room.id === roomID).name;
+        } else {
+            console.log('No room specified, using first room');
+
+            roomID = roomIds[0];
+            roomName = rooms[0].name;
+        }
+
+        switchToRoom(roomID, roomName);
         showRooms();
     });
 
@@ -256,10 +290,10 @@ function main() {
                 console.log("Created room: " + data.id);
                 rooms.push({ name: roomName, id: data.id });
                 roomID = data.id;
-                
-                switchToRoom(roomID);
+
+                switchToRoom(roomID, roomName);
                 showRooms();
-                
+
                 return;
             }
 
