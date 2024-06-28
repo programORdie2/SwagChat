@@ -13,8 +13,9 @@ const asyncHandler = require("express-async-handler");
 
 const Auth = require('./auth/index.js');
 const { uploadBg } = require('./imageProccessor.js');
-const { FINAL_SAVE_USERS, findOne, addRoomToUser } = require("./auth/userModel.js");
+const { FINAL_SAVE_USERS, findOne } = require("./auth/userModel.js");
 const { FINAL_SAVE_ROOMS, roomManager } = require("./roomManager.js");
+const { FINAL_SAVE_INVITES, inviteManager } = require("./inviteManager.js");
 
 const { timeout_info, requests_timout } = require('./constants.js');
 
@@ -26,6 +27,7 @@ let rooms = roomManager;
 function FINAL_SAVE() {
     FINAL_SAVE_USERS();
     FINAL_SAVE_ROOMS();
+    FINAL_SAVE_INVITES();
 }
 
 // If the system is linux, set the NODE_ENV to production
@@ -104,8 +106,68 @@ app.post('/validate', asyncHandler(async (req, res) => {
     if (!user.success) {
         res.clearCookie('token');
     }
+    console.log(user);
     res.json(user);
 }));
+
+app.post('/invite/*', asyncHandler(async (req, res) => {
+    const { token } = req.body;
+    const user = Auth.validateToken(token);
+    if (!user.success) {
+        res.clearCookie('token');
+        res.sendStatus(403);
+    }
+
+    const path = req.path;
+    const id = path.split('/')[2];
+    const invite = await inviteManager.getInvite(id);
+    if (!invite) {
+        res.sendStatus(404);
+        return;
+    }
+
+    const roomData = roomManager.getRoom(invite.room);
+    if (!roomData) {
+        res.sendStatus(404);
+        return;
+    }
+
+    const inviteData = {
+        roomName: roomData.name,
+    }
+
+    res.json(inviteData);
+}));
+
+app.post('/accept_invite/*', asyncHandler(async (req, res) => {
+    const { token } = req.body;
+    const user = Auth.validateToken(token, allData = true);
+    if (!user.success) {
+        res.clearCookie('token');
+        res.sendStatus(403);
+    }
+
+    const path = req.path;
+    const id = path.split('/')[2];
+    const invite = await inviteManager.getInvite(id);
+    if (!invite) {
+        res.sendStatus(404);
+        return;
+    }
+    const roomData = roomManager.getRoom(invite.room);
+    if (!roomData) {
+        res.sendStatus(404);
+        return;
+    }
+    if (roomManager.checkUserIsInRoom(invite.room, user.data.publicId)) {
+        res.sendStatus(200);
+        return;
+    }
+
+    roomManager.addUserToRoom(invite.room, user.data.publicId);
+    res.sendStatus(200);
+}));
+
 
 // Client Routes
 app.get('/', asyncHandler(async (req, res) => {
@@ -120,7 +182,6 @@ app.get('/', asyncHandler(async (req, res) => {
 
     if (!user || !user.success) {
         res.clearCookie('token');
-
         res.sendFile(join(__dirname, '/notAuthorized.html'));
         return;
     }
@@ -145,6 +206,11 @@ app.get('*', (req, res) => {
     if (!fileExists) {
         if (req.path.startsWith('/chat')) {
             res.sendFile(join(__dirname, '/index.html'));
+            return;
+        }
+
+        if (req.path.startsWith('/invite/')) {
+            res.sendFile(join(__dirname, '/invite.html'));
             return;
         }
 
@@ -275,11 +341,17 @@ wss.on('connection', function connection(ws) {
         }
 
         if (room) {
-            addRoomToUser(currentUser.publicId, room.publicId);
             callback({ success: true, id: room.publicId, name: room.name });
         } else {
             callback({ success: false });
         }
+    });
+
+    ws.on("createInvite", (data, callback) => {
+        if (!shouldHandleEvent('createInvite')) return;
+
+        const invite = inviteManager.createInvite(data, currentUser.publicId);
+        callback({ success: true, invite });
     });
 
     ws.on('send', ({ message }) => {

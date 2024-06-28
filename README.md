@@ -133,7 +133,9 @@ That's it, I hope you enjoy it!
 - [ ] Make phone friendly (current phone view is sh!t)
 - [x] Login with both username and email
 - [x] Room creation
-- [ ] Room invitation
+- [x] Room invitation
+- [ ] Invitation management
+- [ ] Notifications
 - [ ] Rooms browser
 - [ ] Email verification
 

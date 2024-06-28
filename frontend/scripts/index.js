@@ -313,10 +313,21 @@ function main() {
 
     document.getElementById("createRoomButton").addEventListener("click", async () => {
         const roomName = await askInput("Create room", "Room name", createRoom);
-
         if (roomName) {
             createRoom(roomName);
         }
+    });
+
+    function createInviteForRoom(roomName) {
+        socket.emit("createInvite", roomName, (data) => {
+            if (data.success) {
+                console.log("Created invite for room: " + data.invite);
+            }
+        });
+    }
+
+    document.getElementById("createInviteButton").addEventListener("click", () => {
+        createInviteForRoom(roomID);
     });
 
     function showOverlay() {

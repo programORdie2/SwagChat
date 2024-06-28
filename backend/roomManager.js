@@ -1,9 +1,11 @@
 const { v4: uuidv4 } = require("uuid");
 const { openDatabase } = require("./database.js");
 
-const roomsDatabase = openDatabase("rooms", "object");
+const { addRoomToUser } = require("./auth/userModel.js");
 
-const CACHE_MESSAGES = 20; // TODO: Put this in env file
+const { CACHE_MESSAGES } = require("./constants.js");
+
+const roomsDatabase = openDatabase("rooms", "object");
 
 function generateRandomId() {
     return uuidv4();
@@ -20,14 +22,22 @@ function createRoom({name, ownerId}) {
         _id: id,
         publicId,
         name: name || "New Room",
-        userIds: [ownerId],
-        ownerId: ownerId || -1,
+        userIds: [],
+        admins: [ownerId],
         messages: [],
         online: [],
         chatBg: null
     };
     roomsDatabase.set(publicId, room);
+
+    addUserToRoom(publicId, ownerId);
+
     return room;
+}
+
+function addUserToRoom(roomId, userId) {
+    roomsDatabase.pushChild(roomId, "userIds", userId);
+    addRoomToUser(userId, roomId);
 }
 
 function addMessage({roomId, user, message}) {
@@ -103,7 +113,8 @@ const roomManager = {
     getChatBg,
     setChatBg,
     getBasicRoomInfos,
-    checkUserIsInRoom
+    checkUserIsInRoom,
+    addUserToRoom,
 }
 
 module.exports = { roomManager, FINAL_SAVE_ROOMS: FINAL_SAVE };

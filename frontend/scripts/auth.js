@@ -22,13 +22,13 @@ async function login() {
         showHTTPError(data);
         return;
     }
-    
+
     document.cookie = `token=${data.token}; path=/; max-age=${cookieExpiresAfter}`;
 
     if (window.parent !== window) {
         window.parent.location.reload();
     }
-    
+
     if (window.location.pathname === "/") {
         window.location.reload();
     }
@@ -47,7 +47,7 @@ async function register() {
     });
 
     const data = await response.json();
-    
+
     console.log(data);
 
     if (!data.success) {
@@ -68,7 +68,14 @@ async function register() {
 }
 
 async function validate() {
-    const token = document.getElementById("token").value;
+    let token
+    try {
+        const cookies = document.cookie.split(";");
+        token = cookies.find((cookie) => cookie.trim().startsWith("token=")).split("=")[1];
+    } catch (error) {
+        console.log(error);
+        return { success: false };
+    }
     const response = await fetch("/validate", {
         method: "POST",
         headers: {
@@ -77,7 +84,10 @@ async function validate() {
         body: JSON.stringify({ token }),
     });
     const data = await response.json();
+    data.token = token;
     console.log(data);
+
+    return data;
 }
 
 function signOut() {
