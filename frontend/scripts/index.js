@@ -45,6 +45,10 @@ function main() {
     }
 
     function setTitle(title) {
+        if (!title) {
+            document.title = `SwagChat`;
+            return;
+        }
         document.title = `SwagChat - ${title}`;
     }
 
@@ -313,6 +317,8 @@ function main() {
     function showOverlay() {
         document.getElementById("overlay").classList.remove("hidden");
         document.getElementById("overlay").classList.add("show");
+
+        setTitle();
     }
 
     function hideOverlay() {

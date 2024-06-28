@@ -66,8 +66,36 @@ function showMessage(title, text, html, closeText = 'Close', withFile = false, o
 }
 
 async function askInput(title, text) {
+    const html = `
+    <h1>${title}</h1>
+    <div class="flex">
+        <input type="text" class="input" placeholder="${text}"/>
+        <button class="uploadFile">Create</button>
+    </div>
+    <a title="Close" class="closeMessage">Cancel</a>
+    `
+    makeMessage(html, false, 'askInput');
+
     return new Promise((resolve, reject) => {
-        const input = prompt(title, text);
-        resolve(input);
+        const _input = document.querySelectorAll('.askInput .input');
+        const input = _input[_input.length - 1];
+
+        input.focus();
+
+        const _cancel = document.querySelectorAll('.askInput .closeMessage');
+        const cancel = _cancel[_cancel.length - 1];
+
+        cancel.addEventListener('click', () => {
+            closePopup(cancel.parentElement.parentElement);
+            resolve(null);
+        });
+
+        const _submit = document.querySelectorAll('.askInput .uploadFile');
+        const submit = _submit[_submit.length - 1];
+
+        submit.addEventListener('click', () => {
+            resolve(input.value);
+            closePopup(cancel.parentElement.parentElement);
+        });
     });
 }

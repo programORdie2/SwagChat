@@ -546,6 +546,35 @@ a:active {
     }
 }
 
+._popup.askInput>div {
+    border: 1px solid  var(--signup-main);
+}
+
+._popup.askInput .closeMessage {
+    border: 1px solid  var(--signup-main);
+    padding: 0.6em 1em;
+
+    transition: all 0.2s ease;
+
+    &:hover {
+        cursor: pointer;
+        background-color: var(--signup-darken);
+        text-decoration: none;
+    }
+}
+
+._popup.askInput input {
+    width: 100%;
+
+    &:focus {
+        background-color: var(--highligh-ops-small);
+    }
+}
+
+._popup.askInput h1 {
+    margin-bottom: 0.9em;
+}
+
 .spinner {
     position: relative;
     width: 20px;
