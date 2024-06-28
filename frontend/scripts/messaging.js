@@ -81,6 +81,12 @@ async function askInput(title, text) {
         const input = _input[_input.length - 1];
 
         input.focus();
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                resolve(input.value);
+                closePopup(cancel.parentElement.parentElement);
+            }
+        })
 
         const _cancel = document.querySelectorAll('.askInput .closeMessage');
         const cancel = _cancel[_cancel.length - 1];

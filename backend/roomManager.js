@@ -20,7 +20,7 @@ function createRoom({name, ownerId}) {
         _id: id,
         publicId,
         name: name || "New Room",
-        userIds: [],
+        userIds: [ownerId],
         ownerId: ownerId || -1,
         messages: [],
         online: [],
@@ -82,6 +82,10 @@ function getBasicRoomInfos(rooms) {
     return rooms.map(getBasicRoomInfo);
 }
 
+function checkUserIsInRoom(roomId, userId) {
+    return roomsDatabase.getChild(roomId, "userIds").includes(userId);
+}
+
 function FINAL_SAVE() {
     roomsDatabase.setAllChild("online", []);
     roomsDatabase.save();
@@ -99,6 +103,7 @@ const roomManager = {
     getChatBg,
     setChatBg,
     getBasicRoomInfos,
+    checkUserIsInRoom
 }
 
 module.exports = { roomManager, FINAL_SAVE_ROOMS: FINAL_SAVE };

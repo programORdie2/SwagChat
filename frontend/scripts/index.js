@@ -248,6 +248,11 @@ function main() {
         } else {
             console.log('No room specified, using first room');
 
+            if (roomIds.length === 0) {
+                showError('No rooms found', 'Create or join a room first.');
+                return;
+            }
+
             roomID = roomIds[0];
             roomName = rooms[0].name;
         }

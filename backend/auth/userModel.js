@@ -17,8 +17,7 @@ function create(user) {
     user._id = id;
     user.publicId = publicId;
     if (!user.data.servers) {
-        // ! Change
-        user.data.servers = ["12fc16da82c144ec8ae9ac9067ebf635", "b90e2c4f6b354eacaede7e9313bfcbe4"];
+        user.data.servers = [];
     }
     if (!user.data.icon) {
         user.data.icon = publicId + ".png";
@@ -48,14 +47,8 @@ function addRoomToUser(userId, roomId) {
     usersDatabase.setChild(userId, "data", data);
 }
 
-function isUserAllowedToJoinRoom(userId, roomId) {
-    const data = usersDatabase.getChild(userId, "data");
-    if (!data) return false;
-    return data.servers.includes(roomId);
-}
-
 function FINAL_SAVE() {
     usersDatabase.save();
 }
 
-module.exports = { create, findOne, FINAL_SAVE_USERS: FINAL_SAVE, addRoomToUser, isUserAllowedToJoinRoom };
+module.exports = { create, findOne, FINAL_SAVE_USERS: FINAL_SAVE, addRoomToUser };
