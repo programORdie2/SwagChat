@@ -64,3 +64,10 @@ function showMessage(title, text, html, closeText = 'Close', withFile = false, o
         });
     }
 }
+
+async function askInput(title, text) {
+    return new Promise((resolve, reject) => {
+        const input = prompt(title, text);
+        resolve(input);
+    });
+}

@@ -2,7 +2,7 @@ const fs = require('fs');
 const sharp = require('sharp');
 const sizeOf = require('image-size');
 
-const BG_SIZE_PX = 1600;
+const { AVATAR_SIZE_PX, BG_SIZE_PX } = require('./constants.js');
 
 /**
  * Handles the processing and storage of a user's avatar image.
@@ -17,7 +17,7 @@ function handleAvatar(base64, userid) {
     const data = base64.replace(/^data:image\/\w+;base64,/, '');
 
     if (data.length > 10000000) {
-        console.log('Avatar size exceeds 1MB');
+        console.warn('Avatar size exceeds 1MB');
         return;
     }
 
@@ -27,7 +27,7 @@ function handleAvatar(base64, userid) {
             return;
         }
 
-        sharp(path).resize({ width: 256, height: 256 }).png().toFile(`./backend/uploads/icons/${userid}.png`, (err) => {
+        sharp(path).resize({ width: AVATAR_SIZE_PX, height: AVATAR_SIZE_PX }).png().toFile(`./backend/uploads/icons/${userid}.png`, (err) => {
             if (err) {
                 console.error('Error resizing file:', err);
                 return;

@@ -35,8 +35,6 @@ function UploadForm(element, callback) {
     e.preventDefault();
     dropbox.classList.remove('dropbox-active');
     dropbox.querySelector('span').innerHTML = 'Upload a file';
-
-    console.log('bye bye file');
   }
 
   function drop(e) {

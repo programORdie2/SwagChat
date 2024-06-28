@@ -9,31 +9,19 @@ const { join } = require('node:path');
 const { Server } = require('socket.io');
 const { exec } = require('child_process');
 const readline = require('node:readline');
-
 const asyncHandler = require("express-async-handler");
 
 const Auth = require('./auth/index.js');
 const { uploadBg } = require('./imageProccessor.js');
-const { FINAL_SAVE_USERS, findOne } = require("./auth/userModel.js");
+const { FINAL_SAVE_USERS, findOne, addRoomToUser } = require("./auth/userModel.js");
 const { FINAL_SAVE_ROOMS, roomManager } = require("./roomManager.js");
+
+const { timeout_info, requests_timout } = require('./constants.js');
 
 // Doesn't need a real db, since all the users rejoin anyway when the connection is lost
 let currentUsers = {};
 
 let rooms = roomManager;
-
-const requests_timout = {
-    join: 0.5,
-    send: 0.5,
-    bgUpload: 60,
-    userDatas: 0.5
-}
-
-const timeout_info = {
-    join: "Whoa, not so fast! Please wait a bit before joining",
-    send: "Whoa, not so fast! Please wait a bit before sending another message",
-    bgUpload: "Whoa, not so fast! Please wait a bit before uploading a new background"
-}
 
 function FINAL_SAVE() {
     FINAL_SAVE_USERS();
@@ -233,6 +221,12 @@ wss.on('connection', function connection(ws) {
         if (!shouldHandleEvent('join')) return;
 
         if (!roomname) return;
+
+        if (!rooms.getRoom(roomname)) {
+            ws.emit("error", "Room not found");
+            return;
+        }
+
         if (currentUsers[ws.id]) {
             const user = currentUsers[ws.id];
             wss.to(user.room).emit('userLeft', { username: user.username, icon: user.icon });
@@ -246,15 +240,32 @@ wss.on('connection', function connection(ws) {
         });
         ws.join(user.room);
 
-        if (!rooms.getRoom(user.room)) {
-            rooms.createRoom(user.room);
-        }
-
         rooms.addOnlineUser(user.room, user.publicId);
         wss.to(user.room).emit('userJoined', { username: user.username, icon: user.icon });
         ws.emit('users', rooms.getOnlineList(user.room));
         ws.emit('allMessages', rooms.getMessages(user.room));
         ws.emit('bg', rooms.getChatBg(user.room));
+    });
+
+    ws.on("createRoom", (roomName, callback) => {
+        if (!shouldHandleEvent('createRoom')) return;
+
+        let room;
+
+        try {
+            room = rooms.createRoom({ name: roomName, ownerId: currentUser.publicId });
+        } catch (error) {
+            console.error(error);
+            ws.emit("error", "Something went wrong. Please try again.");
+            return;
+        }
+
+        if (room) {
+            addRoomToUser(currentUser.publicId, room.publicId);
+            callback({ success: true, id: room.publicId, name: room.name });
+        } else {
+            callback({ success: false });
+        }
     });
 
     ws.on('send', ({ message }) => {
@@ -272,10 +283,15 @@ wss.on('connection', function connection(ws) {
         if (!dataUrl) return;
         if (!user) return;
 
-        uploadBg(dataUrl, user.room, (location) => {
-            rooms.setChatBg(user.room, location);
-            wss.to(user.room).emit('bg', location);
-        });
+        try {
+            uploadBg(dataUrl, user.room, (location) => {
+                rooms.setChatBg(user.room, location);
+                wss.to(user.room).emit('bg', location);
+            });
+        } catch (error) {
+            console.error(error);
+            ws.emit("error", "Something went wrong. Please try again.");
+        }
     });
 
     ws.on('disconnect', () => {
@@ -329,7 +345,7 @@ wss.on('connection', function connection(ws) {
     });
 });
 
-const PORT = process.env.PORT || 5083;
+const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
     console.log('Server started on port ' + PORT + '\n');

@@ -13,15 +13,15 @@ function generateRandomPublicId() {
     return uuidv4().replace(/-/g, "");
 }
 
-function createRoom({name = "New room", ownerId = -1}) {
+function createRoom({name, ownerId}) {
     const id = generateRandomId();
     const publicId = generateRandomPublicId();
     const room = {
         _id: id,
         publicId,
-        name,
+        name: name || "New Room",
         userIds: [],
-        ownerId,
+        ownerId: ownerId || -1,
         messages: [],
         online: [],
         chatBg: null

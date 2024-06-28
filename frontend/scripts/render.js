@@ -27,7 +27,7 @@ function createMessage(message) {
 }
 
 
-function createRoom(room) {
+function createRoomDisplay(room) {
     const name = room.name;
     const id = room.id;
     let extraClass = '';

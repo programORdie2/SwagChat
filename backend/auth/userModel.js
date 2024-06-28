@@ -17,6 +17,7 @@ function create(user) {
     user._id = id;
     user.publicId = publicId;
     if (!user.data.servers) {
+        // ! Change
         user.data.servers = ["12fc16da82c144ec8ae9ac9067ebf635", "b90e2c4f6b354eacaede7e9313bfcbe4"];
     }
     if (!user.data.icon) {
@@ -40,8 +41,15 @@ function findOne({ email, name, id, _id }) {
     return value;
 }
 
+function addRoomToUser(userId, roomId) {
+    const data = usersDatabase.getChild(userId, "data");
+    if (!data) return;
+    data.servers.push(roomId);
+    usersDatabase.setChild(userId, "data", data);
+}
+
 function FINAL_SAVE() {
     usersDatabase.save();
 }
 
-module.exports = { create, findOne, FINAL_SAVE_USERS: FINAL_SAVE };
+module.exports = { create, findOne, FINAL_SAVE_USERS: FINAL_SAVE, addRoomToUser };

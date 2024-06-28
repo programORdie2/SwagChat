@@ -34,6 +34,11 @@ function _database(databaseName, type = 'array') {
     function get(keyOrIndex) {
         return data[keyOrIndex];
     }
+
+    function getChild(key1, key2) {
+        return data[key1][key2];
+    }
+
     /**
      * Sets a value in the database for a given key or index.
      *
@@ -43,6 +48,11 @@ function _database(databaseName, type = 'array') {
      */
     function set(keyOrIndex, value) {
         data[keyOrIndex] = value;
+        changed = true;
+    }
+
+    function setChild(key1, key2, value) {
+        data[key1][key2] = value;
         changed = true;
     }
 
@@ -104,7 +114,9 @@ function _database(databaseName, type = 'array') {
         save: _save,
         deleteItem,
         deleteItemChild,
-        setAllChild
+        setAllChild,
+        getChild,
+        setChild
     };
 }
 

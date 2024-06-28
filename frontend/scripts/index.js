@@ -43,7 +43,7 @@ function main() {
     }
 
     function showRooms() {
-        document.getElementById("rooms").innerHTML = rooms.map(r => createRoom(r)).join("\n");
+        document.getElementById("rooms").innerHTML = rooms.map(r => createRoomDisplay(r)).join("\n");
         const elements = document.getElementById('rooms').querySelectorAll('a');
         elements.forEach(element => {
             element.addEventListener('click', () => {
@@ -128,7 +128,6 @@ function main() {
             toFetch.push(username);
         });
 
-        console.log(toFetch);
         if (toFetch.length === 0) return data;
 
         const otherUsers = await fetchUserDatas(toFetch);
@@ -244,6 +243,37 @@ function main() {
     socket.on('connect', () => {
         console.log('connected');
         hideOverlay();
+    });
+
+    // Unhandled event
+    socket.on("*", (data) => {
+        console.warn('unhandled event: ' + data);
+    });
+
+    function createRoom(roomName) {
+        socket.emit("createRoom", roomName, (data) => {
+            if (data.success) {
+                console.log("Created room: " + data.id);
+                rooms.push({ name: roomName, id: data.id });
+                roomID = data.id;
+                
+                switchToRoom(roomID);
+                showRooms();
+                
+                return;
+            }
+
+            showError("Could not create room", data.message);
+            return;
+        });
+    }
+
+    document.getElementById("createRoomButton").addEventListener("click", async () => {
+        const roomName = await askInput("Create room", "Room name", createRoom);
+
+        if (roomName) {
+            createRoom(roomName);
+        }
     });
 
     function showOverlay() {
