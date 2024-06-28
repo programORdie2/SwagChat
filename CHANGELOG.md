@@ -1,5 +1,24 @@
 # This is a list of all updates
 
+## v0.0.14
+ - BIG rooms update
+   - Allows you to create rooms
+   - Make invite links for your rooms, so other people can join
+   - This took me 3h of my life 💀
+
+ - General updates
+   - Join room by URL
+   - Made login possible with both username and email
+
+ - UI updates
+   - Overlay when ws is disconnected
+   - General UI update
+  
+ - Security updates
+   - WS rate limiting
+   - made userId secret
+   - Lots of bug fixes
+
 ## v0.0.13
  - UI Updates
    - Made register and login UI
