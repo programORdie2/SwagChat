@@ -48,8 +48,14 @@ function addRoomToUser(userId, roomId) {
     usersDatabase.setChild(userId, "data", data);
 }
 
+function isUserAllowedToJoinRoom(userId, roomId) {
+    const data = usersDatabase.getChild(userId, "data");
+    if (!data) return false;
+    return data.servers.includes(roomId);
+}
+
 function FINAL_SAVE() {
     usersDatabase.save();
 }
 
-module.exports = { create, findOne, FINAL_SAVE_USERS: FINAL_SAVE, addRoomToUser };
+module.exports = { create, findOne, FINAL_SAVE_USERS: FINAL_SAVE, addRoomToUser, isUserAllowedToJoinRoom };

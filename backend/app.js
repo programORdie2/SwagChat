@@ -13,7 +13,7 @@ const asyncHandler = require("express-async-handler");
 
 const Auth = require('./auth/index.js');
 const { uploadBg } = require('./imageProccessor.js');
-const { FINAL_SAVE_USERS, findOne, addRoomToUser } = require("./auth/userModel.js");
+const { FINAL_SAVE_USERS, findOne, addRoomToUser, isUserAllowedToJoinRoom } = require("./auth/userModel.js");
 const { FINAL_SAVE_ROOMS, roomManager } = require("./roomManager.js");
 
 const { timeout_info, requests_timout } = require('./constants.js');
@@ -232,6 +232,11 @@ wss.on('connection', function connection(ws) {
         if (!roomname) return;
 
         if (!rooms.getRoom(roomname)) {
+            ws.emit("error", "Room not found");
+            return;
+        }
+
+        if (!isUserAllowedToJoinRoom(currentUser.publicId, roomname)) {
             ws.emit("error", "Room not found");
             return;
         }
